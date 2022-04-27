@@ -10,18 +10,23 @@ import matplotlib.pyplot as plt
 bridge = CvBridge()
 
 
-# Create a callback function for the subscriber.
-def callback(img):
-    # Simply print out values in our custom message.
+def show_image(img):
+    cv2.imshow("Image Window", img)
+    cv2.waitKey(3)
+
+def callback(img_msg):
+    rospy.loginfo(img_msg.header)
     cv2_img = None
     rospy.loginfo('Image received...')
     try:
         # Convert your ROS Image message to OpenCV2
-        cv2_img = bridge.imgmsg_to_cv2(img, "bgr8")
+        cv2_img = bridge.imgmsg_to_cv2(img_msg, "passthrough") #bgr8
     except CvBridgeError, e:
-        print(e)
-    else:
-        plt.imshow(cv2_img)
+        rospy.logerr("CvBridge Error: {0}".format(e))
+
+    # Show the converted image
+    show_image(cv2_img)
+
 
 # This ends up being the main while loop.
 def rgb_listener(topic_name='/yolov4_publisher/color/image'):
@@ -43,6 +48,8 @@ def depth_listener(topic_name='/yolov4_publisher/depth/image'):
 if __name__ == '__main__':
     # Initialize the node and name it.
     # Go to the main loop.
+    # Initialize an OpenCV Window named "Image Window"
+    cv2.namedWindow("Image Window", 1)
     rgb_listener()
     test_loop_rate = rospy.Rate(1)
     test_loop_rate.sleep()
