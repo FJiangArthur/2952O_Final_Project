@@ -42,7 +42,6 @@
         <param name="LRchecktresh"     value="$(arg LRchecktresh)"/>
         <param name="monoResolution"   value="$(arg monoResolution)"/>
     </node>
-    <node name="rgb_listener" pkg="see-pick-mirobot" type="rgb_listener.py" output="screen" required="true">
+    <node name="rgb_listener_node" pkg="see-pick-mirobot" type="rgb_listener.py" output="screen" required="true">
     </node>
-
 </launch>
