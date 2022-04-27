@@ -101,7 +101,7 @@ if( CATKIN_DEVEL_PREFIX OR CATKIN_BUILD_BINARY_PACKAGE )
 #   )
 
 #2952O Commented out
-    mirobot_add_node(rgb_listener src/rgb_listener.py)
+#     mirobot_add_node(rgb_listener src/rgb_listener.py)
 #   mirobot_add_node(crop_control_service ros1_src/crop_control_service.cpp)
 #   mirobot_add_node(mobilenet_node ros1_src/mobilenet_publisher.cpp)
 #   mirobot_add_node(rgb_node ros1_src/rgb_publisher.cpp)
@@ -120,7 +120,7 @@ if( CATKIN_DEVEL_PREFIX OR CATKIN_BUILD_BINARY_PACKAGE )
 
   ## Install these nodes
   install(TARGETS
-            rgb_listener
+#             rgb_listener
 #           crop_control_service
 #           mobilenet_node
 #           rgb_node
