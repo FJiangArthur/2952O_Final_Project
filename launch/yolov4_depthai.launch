@@ -44,6 +44,8 @@
     </node>
 
     <node name="yolov4_processor_node" pkg="see-pick-mirobot" type="yolov4_processor.py" output="screen" required="true">
+    <node name="camera_brocaster_node" pkg="see-pick-mirobot" type="tf_broadcaster" output="screen" required="true">
+    <node name="camera_listener_node" pkg="see-pick-mirobot" type="tf_listener" output="screen" required="true">
     </node>
     <node
         name="joint_state_publisher"

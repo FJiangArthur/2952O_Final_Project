@@ -50,6 +50,7 @@ if( CATKIN_DEVEL_PREFIX OR CATKIN_BUILD_BINARY_PACKAGE )
     depthai_bridge
     message_filters
     nodelet
+    tf
   )
 
   catkin_package(
@@ -116,7 +117,10 @@ if( CATKIN_DEVEL_PREFIX OR CATKIN_BUILD_BINARY_PACKAGE )
 #2952O Commented out
 #   target_compile_definitions(mobilenet_node PRIVATE BLOB_PATH="${mobilenet_blob}")
 #   target_compile_definitions(yolov4_spatial_node PRIVATE BLOB_PATH="${tiny_yolo_v4_blob}")
-
+  add_executable(tf_broadcaster src/tf_broadcaster.cpp)
+  add_executable(tf_listener src/tf_listener.cpp)
+  target_link_libraries(tf_broadcaster ${catkin_LIBRARIES})
+  target_link_libraries(tf_listener ${catkin_LIBRARIES})
 
   ## Install these nodes
   install(TARGETS
