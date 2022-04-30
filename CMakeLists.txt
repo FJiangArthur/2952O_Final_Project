@@ -40,6 +40,7 @@ find_package(ament_cmake QUIET)
 
 if( CATKIN_DEVEL_PREFIX OR CATKIN_BUILD_BINARY_PACKAGE )
   find_package(catkin REQUIRED COMPONENTS
+    message_runtime
     camera_info_manager
     depthai_ros_msgs
     roscpp
@@ -50,15 +51,10 @@ if( CATKIN_DEVEL_PREFIX OR CATKIN_BUILD_BINARY_PACKAGE )
     depthai_bridge
     message_filters
     nodelet
-#     tf2
-#     tf2_msgs
-#     tf2_ros
-#     tf2_geometry_msgs
     actionlib
     control_msgs
     diagnostic_msgs
     geometry_msgs
-#     manipulation_msgs
     moveit_msgs
     moveit_ros_perception
     moveit_ros_planning_interface
