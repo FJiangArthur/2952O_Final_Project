@@ -50,7 +50,22 @@ if( CATKIN_DEVEL_PREFIX OR CATKIN_BUILD_BINARY_PACKAGE )
     depthai_bridge
     message_filters
     nodelet
+#     tf2
+#     tf2_msgs
+#     tf2_ros
+#     tf2_geometry_msgs
+    actionlib
+    control_msgs
+    diagnostic_msgs
+    geometry_msgs
+#     manipulation_msgs
+    moveit_msgs
+    moveit_ros_perception
+    moveit_ros_planning_interface
+    rospy
+    std_srvs
     tf
+    trajectory_msgs
   )
 
   catkin_package(
@@ -117,14 +132,17 @@ if( CATKIN_DEVEL_PREFIX OR CATKIN_BUILD_BINARY_PACKAGE )
 #2952O Commented out
 #   target_compile_definitions(mobilenet_node PRIVATE BLOB_PATH="${mobilenet_blob}")
 #   target_compile_definitions(yolov4_spatial_node PRIVATE BLOB_PATH="${tiny_yolo_v4_blob}")
-  add_executable(tf_broadcaster src/tf_broadcaster.cpp)
-  add_executable(tf_listener src/tf_listener.cpp)
-  target_link_libraries(tf_broadcaster ${catkin_LIBRARIES})
-  target_link_libraries(tf_listener ${catkin_LIBRARIES})
 
+
+# catkin_install_python(PROGRAMS
+#   scripts/moveit_group_python_interface.py
+#   DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
+# )
+#
+# install(DIRECTORY launch DESTINATION ${CATKIN_PACKAGE_SHARE_DESTINATION})
   ## Install these nodes
   install(TARGETS
-#             rgb_listener
+#           rgb_listener
 #           crop_control_service
 #           mobilenet_node
 #           rgb_node
@@ -134,6 +152,7 @@ if( CATKIN_DEVEL_PREFIX OR CATKIN_BUILD_BINARY_PACKAGE )
 #           stereo_inertial_node
 #           stereo_node
 #           yolov4_spatial_node
+
           RUNTIME DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
   )
 
