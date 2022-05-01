@@ -100,9 +100,9 @@ if( CATKIN_DEVEL_PREFIX OR CATKIN_BUILD_BINARY_PACKAGE )
 #2952O Commented out
 #   add_library(nodelet_stereo ros1_src/stereo_nodelet.cpp)
 
-  add_dependencies(nodelet_stereo ${${PROJECT_NAME}_EXPORTED_TARGETS}
-    ${catkin_EXPORTED_TARGETS}
-  )
+#   add_dependencies(nodelet_stereo ${${PROJECT_NAME}_EXPORTED_TARGETS}
+#     ${catkin_EXPORTED_TARGETS}
+#   )
 
 #2952O Commented out
 #   target_link_libraries(nodelet_stereo
@@ -125,13 +125,14 @@ if( CATKIN_DEVEL_PREFIX OR CATKIN_BUILD_BINARY_PACKAGE )
 #   mirobot_add_node(stereo_node ros1_src/stereo_publisher.cpp)
 #   mirobot_add_node(yolov4_spatial_node ros1_src/yolov4_spatial_publisher.cpp)
 
+
 #2952O Commented out
 #   target_compile_definitions(mobilenet_node PRIVATE BLOB_PATH="${mobilenet_blob}")
 #   target_compile_definitions(yolov4_spatial_node PRIVATE BLOB_PATH="${tiny_yolo_v4_blob}")
 
 
 # catkin_install_python(PROGRAMS
-#   scripts/moveit_group_python_interface.py
+#   scripts/moveit_group_python_mirobot.py
 #   DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
 # )
 #
