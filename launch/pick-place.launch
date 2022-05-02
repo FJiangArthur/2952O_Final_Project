@@ -1,0 +1,10 @@
+<?xml version="1.0"?>
+<launch>
+    <include file="$(find mirobot_moveit_config)/launch/demo.launch"/>
+
+    <include file="$(find see-pick-mirobot)/launch/setup_tf.launch">
+    </include>
+
+<!--    <include file="$(find see-pick-mirobot)/launch/yolov4_depthai.launch">-->
+<!--    </include>-->
+</launch>

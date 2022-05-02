@@ -40,6 +40,7 @@ find_package(ament_cmake QUIET)
 
 if( CATKIN_DEVEL_PREFIX OR CATKIN_BUILD_BINARY_PACKAGE )
   find_package(catkin REQUIRED COMPONENTS
+    message_runtime
     camera_info_manager
     depthai_ros_msgs
     roscpp
@@ -50,6 +51,17 @@ if( CATKIN_DEVEL_PREFIX OR CATKIN_BUILD_BINARY_PACKAGE )
     depthai_bridge
     message_filters
     nodelet
+    actionlib
+    control_msgs
+    diagnostic_msgs
+    geometry_msgs
+    moveit_msgs
+    moveit_ros_perception
+    moveit_ros_planning_interface
+    rospy
+    std_srvs
+    tf
+    trajectory_msgs
   )
 
   catkin_package(
@@ -88,9 +100,9 @@ if( CATKIN_DEVEL_PREFIX OR CATKIN_BUILD_BINARY_PACKAGE )
 #2952O Commented out
 #   add_library(nodelet_stereo ros1_src/stereo_nodelet.cpp)
 
-  add_dependencies(nodelet_stereo ${${PROJECT_NAME}_EXPORTED_TARGETS}
-    ${catkin_EXPORTED_TARGETS}
-  )
+#   add_dependencies(nodelet_stereo ${${PROJECT_NAME}_EXPORTED_TARGETS}
+#     ${catkin_EXPORTED_TARGETS}
+#   )
 
 #2952O Commented out
 #   target_link_libraries(nodelet_stereo
@@ -113,14 +125,21 @@ if( CATKIN_DEVEL_PREFIX OR CATKIN_BUILD_BINARY_PACKAGE )
 #   mirobot_add_node(stereo_node ros1_src/stereo_publisher.cpp)
 #   mirobot_add_node(yolov4_spatial_node ros1_src/yolov4_spatial_publisher.cpp)
 
+
 #2952O Commented out
 #   target_compile_definitions(mobilenet_node PRIVATE BLOB_PATH="${mobilenet_blob}")
 #   target_compile_definitions(yolov4_spatial_node PRIVATE BLOB_PATH="${tiny_yolo_v4_blob}")
 
 
+# catkin_install_python(PROGRAMS
+#   scripts/moveit_group_python_mirobot.py
+#   DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
+# )
+#
+# install(DIRECTORY launch DESTINATION ${CATKIN_PACKAGE_SHARE_DESTINATION})
   ## Install these nodes
   install(TARGETS
-#             rgb_listener
+#           rgb_listener
 #           crop_control_service
 #           mobilenet_node
 #           rgb_node
@@ -130,6 +149,7 @@ if( CATKIN_DEVEL_PREFIX OR CATKIN_BUILD_BINARY_PACKAGE )
 #           stereo_inertial_node
 #           stereo_node
 #           yolov4_spatial_node
+
           RUNTIME DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
   )
 
