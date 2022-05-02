@@ -15,4 +15,7 @@ python3 server.py
 
 ### TODO: 
 1. Move the manipulator to the target position. 
-2. Transform the target position. 
+2. Transform the target position.
+
+### For coordinate System Transform: 
+https://wiki.ros.org/tf/Overview/Transformations

@@ -200,6 +200,7 @@ class MoveGroupPythonIntefaceMirobot(object):
     ## ^^^^^^^^^^^^^^^^^^^^^^^
     ## We can plan a motion for this group to a desired pose for the
     ## end-effector:
+    print("Plan")
     pose_goal = geometry_msgs.msg.Pose()
     pose_goal.orientation.w = target_pose.orientation.w
     pose_goal.position.x = target_pose.position.x
@@ -463,19 +464,23 @@ def main():
 
   while not rospy.is_shutdown():
     try:
-      print("Here we reach")
-      trans = tfBuffer.lookup_transform('base_depth', 'base_link', rospy.Time())
+      # This is "Target Frame", "Source Frame"
+      trans = tfBuffer.lookup_transform('base_link', 'depthai_target_pose', rospy.Time())
+
     except (tf2_ros.LookupException, tf2_ros.ConnectivityException, tf2_ros.ExtrapolationException):
       rate.sleep()
       continue
 
     msg = geometry_msgs.msg.Pose()
-    # TODO:
+
+    # TODO: SET UP THE ORIENTATION
     msg.orientation.w = 0
+
     msg.position.x = trans.transform.translation.x
     msg.position.y = trans.transform.translation.y
     msg.position.z = trans.transform.translation.z
-    print("Current Msg %s", msg)
+
+    print("Current goal position relative to Mirobot is:", msg)
     tutorial.go_to_pose_goal(msg)
     rate.sleep()
 
