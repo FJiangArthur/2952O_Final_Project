@@ -12,14 +12,26 @@ npm start
 cd flask-server
 python3 server.py
 
+## Getting Started: 
+### Launch: 
 
-### TODO: 
+First starting calibration, tf, and motion planning: 
+```shell 
+roslaunch see-pick-mirobot pick-place.launch
+```
+
+Then connect DepthAI and start yolov4 node:
+```shell
+roslaunch see-pick-mirobot yolov4_depthai.launch
+```
+
+### Art's TODO: 
 1. Move the manipulator to the target position. 
 2. Transform the target position.
 
+## References: 
 ### For coordinate System Transform: 
 https://wiki.ros.org/tf/Overview/Transformations
-
 
 ### Important: 
 It seems that in the MoveIt workspace, the x axis is the direction arm is facing after homing. 
