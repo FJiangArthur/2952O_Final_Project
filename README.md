@@ -19,3 +19,19 @@ python3 server.py
 
 ### For coordinate System Transform: 
 https://wiki.ros.org/tf/Overview/Transformations
+
+
+### Important: 
+It seems that in the MoveIt workspace, the x axis is the direction arm is facing after homing. 
+
+joint_goal = move_group.get_current_joint_values()
+joint_goal[0] = 0
+joint_goal[1] = 1.1089
+joint_goal[2] = -0.6339
+joint_goal[3] = 0
+joint_goal[4] = -0.483
+joint_goal[5] = 0
+pose_goal.orientation.w = 0
+pose_goal.position.x = 0.28
+pose_goal.position.y = 0.0
+pose_goal.position.z = 0.09

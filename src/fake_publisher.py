@@ -6,8 +6,9 @@ import geometry_msgs.msg
 def talker():
     pub = rospy.Publisher('depthai_target_pose', geometry_msgs.msg.Pose, queue_size=1)
     rospy.init_node('depthai_target_pose', anonymous=True)
-    rate = rospy.Rate(0.1) # 10hz
+    rate = rospy.Rate(0.1) # Every 10s.
     while not rospy.is_shutdown():
+
         # TODO: Change this to real target goal
         hello_pose = geometry_msgs.msg.Pose()
         hello_pose.orientation.w = 0
@@ -22,3 +23,4 @@ if __name__ == '__main__':
         talker()
     except rospy.ROSInterruptException:
         pass
+
