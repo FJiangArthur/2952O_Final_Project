@@ -47,6 +47,9 @@ spatialDetectionNetwork = pipeline.create(dai.node.YoloSpatialDetectionNetwork)
 monoLeft = pipeline.create(dai.node.MonoCamera)
 monoRight = pipeline.create(dai.node.MonoCamera)
 stereo = pipeline.create(dai.node.StereoDepth)
+spatialLocationCalculator = pipeline.create(dai.node.SpatialLocationCalculator)
+
+manip = pipeline.create(dai.node.ImageManip)
 
 xoutRgb = pipeline.create(dai.node.XLinkOut)
 xoutNN = pipeline.create(dai.node.XLinkOut)
