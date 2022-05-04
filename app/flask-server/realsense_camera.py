@@ -6,15 +6,38 @@ import numpy as np
 class RealsenseCamera:
     def __init__(self):
         # Configure depth and color streams
-        print("Loading Intel Realsense Camera")
         self.pipeline = rs.pipeline()
 
-        config = rs.config()
-        config.enable_stream(rs.stream.color, 1280, 720, rs.format.bgr8, 30)
-        config.enable_stream(rs.stream.depth, 1280, 720, rs.format.z16, 30)
+        self.config = rs.config()
+
+        # Get device product line for setting a supporting resolution
+        self.pipeline_wrapper = rs.pipeline_wrapper(self.pipeline)
+        self.pipeline_profile = self.config.resolve(self.pipeline_wrapper)
+        self.device = self.pipeline_profile.get_device()
+        self.device_product_line = str(
+            self.device.get_info(rs.camera_info.product_line))
+
+        found_rgb = False
+        for s in self.device.sensors:
+            if s.get_info(rs.camera_info.name) == 'RGB Camera':
+                print("Found realseanse")
+                found_rgb = True
+                break
+        if not found_rgb:
+            print("The demo requires Depth camera with Color sensor")
+            exit(0)
+
+        self.config.enable_stream(rs.stream.depth, 640, 480, rs.format.z16, 30)
+
+        if self.device_product_line == 'L500':
+            self.config.enable_stream(
+                rs.stream.color, 960, 540, rs.format.bgr8, 30)
+        else:
+            self.config.enable_stream(
+                rs.stream.color, 640, 480, rs.format.bgr8, 30)
 
         # Start streaming
-        self.pipeline.start(config)
+        self.pipeline.start(self.config)
         align_to = rs.stream.color
         self.align = rs.align(align_to)
 

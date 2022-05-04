@@ -11,16 +11,19 @@ import "./App.css";
 import { Grid } from "@mui/material";
 
 function App() {
-  // const [data, setData] = useState([{}]);
+  const [video, setVideo] = useState("");
 
-  // useEffect(() => {
-  //   fetch("/members")
-  //     .then((res) => res.json())
-  //     .then((data) => {
-  //       setData(data);
-  //       console.log(data);
-  //     });
-  // }, []);
+  useEffect(() => {
+    const response = fetch("/realsense", {
+      method: "POST",
+    });
+
+    if (response.ok) {
+      console.log("response worked");
+      console.log(response);
+      console.log(typeof response);
+    }
+  }, []);
 
   return (
     <React.Fragment>
@@ -56,7 +59,7 @@ function App() {
               </Button>
             </Grid>
             <Grid item xs={6}>
-              <Button
+              {/* <Button
                 onClick={async () => {
                   const response = await fetch("/realsense", {
                     method: "POST",
@@ -64,13 +67,25 @@ function App() {
 
                   if (response.ok) {
                     console.log("response worked");
+                    console.log(response);
                   }
                 }}
                 sx={{ height: "20vh", width: "100%" }}
                 variant="outlined"
               >
                 Intel RealSense
-              </Button>
+              </Button> */}
+              <iframe
+                frameborder="0"
+                onresize="noresize"
+                style={{
+                  background: "transparent",
+                  width: "100%",
+                  height: "100%",
+                }}
+                src={video}
+                title="intel-realsense"
+              ></iframe>
             </Grid>
           </Grid>
           {/* <div id="footer">
