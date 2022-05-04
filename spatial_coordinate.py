@@ -11,10 +11,19 @@ newConfig = False
 pipeline = dai.Pipeline()
 
 # Define sources and outputs
+camRgb = pipeline.create(dai.node.ColorCamera)
 monoLeft = pipeline.create(dai.node.MonoCamera)
 monoRight = pipeline.create(dai.node.MonoCamera)
 stereo = pipeline.create(dai.node.StereoDepth)
 spatialLocationCalculator = pipeline.create(dai.node.SpatialLocationCalculator)
+
+xoutRgb = pipeline.create(dai.node.XLinkOut)
+xoutRgb.setStreamName("rgb")
+camRgb.setPreviewSize(416, 416)
+camRgb.setResolution(dai.ColorCameraProperties.SensorResolution.THE_1080_P)
+camRgb.setInterleaved(False)
+camRgb.setColorOrder(dai.ColorCameraProperties.ColorOrder.BGR)
+camRgb.preview.link(xoutRgb.input)
 
 xoutDepth = pipeline.create(dai.node.XLinkOut)
 xoutSpatialData = pipeline.create(dai.node.XLinkOut)
@@ -30,16 +39,17 @@ monoLeft.setBoardSocket(dai.CameraBoardSocket.LEFT)
 monoRight.setResolution(dai.MonoCameraProperties.SensorResolution.THE_400_P)
 monoRight.setBoardSocket(dai.CameraBoardSocket.RIGHT)
 
-lrcheck = False
-subpixel = False
+# lrcheck = False
+# subpixel = False
 
 stereo.setDefaultProfilePreset(dai.node.StereoDepth.PresetMode.HIGH_DENSITY)
-stereo.setLeftRightCheck(lrcheck)
-stereo.setSubpixel(subpixel)
+# stereo.setLeftRightCheck(lrcheck)
+# stereo.setSubpixel(subpixel)
 
 # Config
-topLeft = dai.Point2f(0.4, 0.4)
-bottomRight = dai.Point2f(0.6, 0.6)
+# 2952: This is the region for calibrate
+topLeft = dai.Point2f(0.5, 0.5)
+bottomRight = dai.Point2f(0.55, 0.55)
 
 config = dai.SpatialLocationCalculatorConfigData()
 config.depthThresholds.lowerThreshold = 100
@@ -61,6 +71,7 @@ xinSpatialCalcConfig.out.link(spatialLocationCalculator.inputConfig)
 
 # Connect to device and start pipeline
 with dai.Device(pipeline) as device:
+    previewQueue = device.getOutputQueue(name="rgb", maxSize=4, blocking=False)
 
     # Output queue will be used to get the depth frames from the outputs defined above
     depthQueue = device.getOutputQueue(name="depth", maxSize=4, blocking=False)
@@ -72,8 +83,10 @@ with dai.Device(pipeline) as device:
     print("Use WASD keys to move ROI!")
 
     while True:
+        inPreview = previewQueue.get()
         inDepth = depthQueue.get() # Blocking call, will wait until a new data has arrived
 
+        frame = inPreview.getCvFrame()
         depthFrame = inDepth.getFrame() # depthFrame values are in millimeters
 
         depthFrameColor = cv2.normalize(depthFrame, None, 255, 0, cv2.NORM_INF, cv2.CV_8UC1)
@@ -97,8 +110,18 @@ with dai.Device(pipeline) as device:
             cv2.putText(depthFrameColor, f"X: {int(depthData.spatialCoordinates.x)} mm", (xmin + 10, ymin + 20), fontType, 0.5, 255)
             cv2.putText(depthFrameColor, f"Y: {int(depthData.spatialCoordinates.y)} mm", (xmin + 10, ymin + 35), fontType, 0.5, 255)
             cv2.putText(depthFrameColor, f"Z: {int(depthData.spatialCoordinates.z)} mm", (xmin + 10, ymin + 50), fontType, 0.5, 255)
+
+            cv2.rectangle(frame, (xmin, ymin), (xmax, ymax), color, cv2.FONT_HERSHEY_SIMPLEX)
+            cv2.putText(frame, f"X: {int(depthData.spatialCoordinates.x)} mm", (xmin + 10, ymin + 20),
+                        fontType, 0.5, 255)
+            cv2.putText(frame, f"Y: {int(depthData.spatialCoordinates.y)} mm", (xmin + 10, ymin + 35),
+                        fontType, 0.5, 255)
+            cv2.putText(frame, f"Z: {int(depthData.spatialCoordinates.z)} mm", (xmin + 10, ymin + 50),
+                        fontType, 0.5, 255)
+        # Sh
         # Show the frame
-        cv2.imshow("depth", depthFrameColor)
+        # cv2.imshow("depth", depthFrameColor)
+        cv2.imshow("rgb", frame)
 
         key = cv2.waitKey(1)
         if key == ord('q'):

@@ -35,25 +35,32 @@ def rigid_transform_3D(A, B):
 
 
 if __name__=='__main__':
-	a = np.array([[90, -212, 1856],
-                  [145, -220, 859],
-                  [0.074728, -0.081546, 0.895]])
+    a = np.array([[-93, -152, 506],
+                  [-96, -84, 522],
+                  [-63, 119, 574],
+                  [63, -12, 567],
+                  [-147, 172, 570]])
+
+    b = np.array([[15, -20, 0],
+                  [16, -15, 0],
+                  [20, 0, 0],
+                  [30, -10, 0],
+                  [15, 5, 0]])
+
+    # Following code are for testing using the last two points from a and b
+
+    # c = np.reshape(a[-2:], (2, 3))
+    # test_a1 = np.reshape(c[0],(1,3))
+    # test_a2 = np.reshape(c[1],(1,3))
+
+    # c=np.reshape(b[-2:], (2, 3))
+    # test_b1 = np.reshape(c[0],(1,3))
+    # test_b2 = np.reshape(c[1],(1,3))
+
+    # a = a[:-2]
+    # b = b[:-2]
 
 
-    b = np.array([[20, -15, 0],
-                  [20, 20, 0],
-                  [0.38551146, 0.51143277, 0.28599533]])
-
-  	c = np.reshape(a[-2:], (2, 3))
-    test_a1 = np.reshape(c[0],(1,3))
-    test_a2 = np.reshape(c[1],(1,3))
-
-    c=np.reshape(b[-2:], (2, 3))
-    test_b1 = np.reshape(c[0],(1,3))
-    test_b2 = np.reshape(c[1],(1,3))
-
-    a = a[:-2]
-    b = b[:-2]
     r, t = rigid_transform_3D(a, b)
     print('r:',r)
     print('t:',t)
@@ -61,9 +68,13 @@ if __name__=='__main__':
     bb = np.matmul(a, r.T) + t.reshape([1, 3])
     print('b-bb:', b - bb)
 
-    c = np.matmul(test_a1, r.T) + t.reshape([1, 3])
-    print('c-test_b1:', c - test_b1)
-
-    c = np.matmul(test_a2, r.T) + t.reshape([1, 3])
-    print('c-test_b2:', c - test_b2)
+    obj_cord_camera=np.array([[-60, -12, 541]])
+    obj_cord_mirobot = np.matmul(obj_cord_camera, r.T) + t.reshape([1, 3])
+    print(obj_cord_mirobot)
+    #
+    # c = np.matmul(test_a1, r.T) + t.reshape([1, 3])
+    # print('c-test_b1:', c - test_b1)
+    #
+    # c = np.matmul(test_a2, r.T) + t.reshape([1, 3])
+    # print('c-test_b2:', c - test_b2)
 
