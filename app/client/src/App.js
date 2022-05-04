@@ -2,98 +2,44 @@ import React, { useState, useEffect } from "react";
 import Container from "@mui/material/Container";
 import CssBaseline from "@mui/material/CssBaseline";
 import Box from "@mui/material/Box";
-import Typography from "@mui/material/Typography";
-import { styled } from "@mui/material/styles";
-import Paper from "@mui/material/Paper";
-import Button from "@mui/material/Button";
+
+import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
 
 import "./App.css";
-import { Grid } from "@mui/material";
+import Main from "./components/main/Main";
+import Realsense from "./components/realsense/Realsense";
+import Simple from "./components/simple/Simple";
 
 function App() {
-  const [video, setVideo] = useState("");
+  // const [video, setVideo] = useState("");
 
-  useEffect(() => {
-    const response = fetch("/realsense", {
-      method: "POST",
-    });
+  // useEffect(() => {
+  //   const response = fetch("/realsense", {
+  //     method: "POST",
+  //   });
 
-    if (response.ok) {
-      console.log("response worked");
-      console.log(response);
-      console.log(typeof response);
-    }
-  }, []);
+  //   if (response.ok) {
+  //     console.log("response worked");
+  //     console.log(response);
+  //     console.log(typeof response);
+  //   }
+  // }, []);
 
   return (
-    <React.Fragment>
-      <CssBaseline />
-      <Container maxWidth={false}>
-        <Box sx={{ bgcolor: "#FAFAFF", height: "100vh" }}>
-          <Typography variant="h2" align="center">
-            See-n-Pick
-          </Typography>
-          <Typography variant="h4" align="center">
-            2952-O Final Project
-          </Typography>
-          <Typography variant="body1" align="left" sx={{ mt: 4, padding: 1 }}>
-            Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
-            eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim
-            ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut
-            aliquip ex ea commodo consequat. Duis aute irure dolor in
-            reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla
-            pariatur. Excepteur sint occaecat cupidatat non proident, sunt in
-            culpa qui officia deserunt mollit anim id est laborum.
-          </Typography>
-          <Grid
-            container
-            spacing={2}
-            alignItems="center"
-            justifyContent="center"
-            mt={4}
-            padding={1}
-          >
-            <Grid item xs={6}>
-              <Button sx={{ height: "20vh", width: "100%" }} variant="outlined">
-                OpenCV Oak-D Lite
-              </Button>
-            </Grid>
-            <Grid item xs={6}>
-              {/* <Button
-                onClick={async () => {
-                  const response = await fetch("/realsense", {
-                    method: "POST",
-                  });
-
-                  if (response.ok) {
-                    console.log("response worked");
-                    console.log(response);
-                  }
-                }}
-                sx={{ height: "20vh", width: "100%" }}
-                variant="outlined"
-              >
-                Intel RealSense
-              </Button> */}
-              <iframe
-                frameborder="0"
-                onresize="noresize"
-                style={{
-                  background: "transparent",
-                  width: "100%",
-                  height: "100%",
-                }}
-                src={video}
-                title="intel-realsense"
-              ></iframe>
-            </Grid>
-          </Grid>
-          {/* <div id="footer">
-            This is a footer. This stays at the bottom of the page.
-          </div> */}
-        </Box>
-      </Container>
-    </React.Fragment>
+    <Router>
+      <React.Fragment>
+        <CssBaseline />
+        <Container maxWidth={false}>
+          <Box sx={{ bgcolor: "#FAFAFF", height: "100vh" }}>
+            <Routes>
+              <Route path="/" element={<Main />}></Route>
+              <Route path="/simple" element={<Simple />}></Route>
+              <Route path="/realsense" element={<Realsense />}></Route>
+            </Routes>
+          </Box>
+        </Container>
+      </React.Fragment>
+    </Router>
   );
 }
 
