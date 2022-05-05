@@ -2,11 +2,12 @@
 import cv2
 import numpy as np
 
+
 class MaskRCNN:
     def __init__(self):
         # Loading Mask RCNN
         self.net = cv2.dnn.readNetFromTensorflow("dnn/frozen_inference_graph_coco.pb",
-                                            "dnn/mask_rcnn_inception_v2_coco_2018_01_28.pbtxt")
+                                                 "dnn/mask_rcnn_inception_v2_coco_2018_01_28.pbtxt")
         self.net.setPreferableBackend(cv2.dnn.DNN_BACKEND_CUDA)
         self.net.setPreferableTarget(cv2.dnn.DNN_TARGET_CUDA)
 
@@ -32,12 +33,16 @@ class MaskRCNN:
         # Distances
         self.distances = []
 
-
     def detect_objects_mask(self, bgr_frame):
+        print("Detecting objects...")
+        print("Type of bgr_frame: ", type(bgr_frame))
         blob = cv2.dnn.blobFromImage(bgr_frame, swapRB=True)
         self.net.setInput(blob)
 
-        boxes, masks = self.net.forward(["detection_out_final", "detection_masks"])
+        # print("blob: ", blob)
+
+        boxes, masks = self.net.forward(
+            ["detection_out_final", "detection_masks"])
 
         # Detect objects
         frame_height, frame_width, _ = bgr_frame.shape
@@ -77,8 +82,10 @@ class MaskRCNN:
             mask = masks[i, int(class_id)]
             roi_height, roi_width = y2 - y, x2 - x
             mask = cv2.resize(mask, (roi_width, roi_height))
-            _, mask = cv2.threshold(mask, self.mask_threshold, 255, cv2.THRESH_BINARY)
-            contours, _ = cv2.findContours(np.array(mask, np.uint8), cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
+            _, mask = cv2.threshold(
+                mask, self.mask_threshold, 255, cv2.THRESH_BINARY)
+            contours, _ = cv2.findContours(
+                np.array(mask, np.uint8), cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
             self.obj_contours.append(contours)
 
         return self.obj_boxes, self.obj_classes, self.obj_contours, self.obj_centers
@@ -95,8 +102,10 @@ class MaskRCNN:
 
             for cnt in contours:
                 # cv2.f(roi, [cnt], (int(color[0]), int(color[1]), int(color[2])))
-                cv2.drawContours(roi, [cnt], - 1, (int(color[0]), int(color[1]), int(color[2])), 3)
-                cv2.fillPoly(roi_copy, [cnt], (int(color[0]), int(color[1]), int(color[2])))
+                cv2.drawContours(
+                    roi, [cnt], - 1, (int(color[0]), int(color[1]), int(color[2])), 3)
+                cv2.fillPoly(roi_copy, [cnt], (int(
+                    color[0]), int(color[1]), int(color[2])))
                 roi = cv2.addWeighted(roi, 1, roi_copy, 0.5, 0.0)
                 bgr_frame[y: y2, x: x2] = roi
         return bgr_frame
@@ -118,16 +127,10 @@ class MaskRCNN:
 
             class_name = self.classes[int(class_id)]
             cv2.rectangle(bgr_frame, (x, y), (x + 250, y + 70), color, -1)
-            cv2.putText(bgr_frame, class_name.capitalize(), (x + 5, y + 25), 0, 0.8, (255, 255, 255), 2)
-            cv2.putText(bgr_frame, "{} cm".format(depth_mm / 10), (x + 5, y + 60), 0, 1.0, (255, 255, 255), 2)
+            cv2.putText(bgr_frame, class_name.capitalize(),
+                        (x + 5, y + 25), 0, 0.8, (255, 255, 255), 2)
+            cv2.putText(bgr_frame, "{} cm".format(depth_mm / 10),
+                        (x + 5, y + 60), 0, 1.0, (255, 255, 255), 2)
             cv2.rectangle(bgr_frame, (x, y), (x2, y2), color, 1)
 
-
-
-
         return bgr_frame
-
-
-
-
-
