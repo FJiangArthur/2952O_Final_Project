@@ -143,9 +143,9 @@ with dai.Device(pipeline) as device:
         detections = inDet.detections
 
         mirobot_info_que = {}
-
+        current_time_que = time.monotonic()
         if len(detections) != 0:
-            current_time_que = time.monotonic()
+
 
 
             detections = inDet.detections
@@ -191,7 +191,7 @@ with dai.Device(pipeline) as device:
             cv2.rectangle(frame, (x1, y1), (x2, y2), color, cv2.FONT_HERSHEY_SIMPLEX)
 
         if (current_time_que - startTime_que) > 1:
-            process_queue.put(mirobot_info_que)
+            # process_queue.put(mirobot_info_que)
             startTime_que = current_time_que
 
         cv2.putText(frame, "NN fps: {:.2f}".format(fps), (2, frame.shape[0] - 4), cv2.FONT_HERSHEY_TRIPLEX, 0.4, color)
