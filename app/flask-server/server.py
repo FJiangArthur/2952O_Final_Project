@@ -1,102 +1,14 @@
 from flask import Flask, Response
-import pyrealsense2 as rs
-import numpy as np
-import cv2
 
-# from realsense_camera import *
-# from mask_rcnn import *
-
-# from measure_object_distance import run
+from realsense import *
+from webcam import *
+from mask_rcnn import *
 
 app = Flask(__name__)
 
-
-class VideoCamera(object):
-    def __init__(self):
-        self.video = cv2.VideoCapture(1)
-
-    def __del__(self):
-        self.video.release()
-
-    def get_frame(self):
-        ret, frame = self.video.read()
-        ret, jpeg = cv2.imencode('.jpg', frame)
-        return jpeg.tobytes()
-
-
-class RealsenseCamera:
-    def __init__(self):
-        # Configure depth and color streams
-        self.pipeline = rs.pipeline()
-
-        self.config = rs.config()
-
-        # Get device product line for setting a supporting resolution
-        self.pipeline_wrapper = rs.pipeline_wrapper(self.pipeline)
-        self.pipeline_profile = self.config.resolve(self.pipeline_wrapper)
-        self.device = self.pipeline_profile.get_device()
-        self.device_product_line = str(
-            self.device.get_info(rs.camera_info.product_line))
-
-        found_rgb = False
-        for s in self.device.sensors:
-            if s.get_info(rs.camera_info.name) == 'RGB Camera':
-                print("Found realseanse")
-                found_rgb = True
-                break
-        if not found_rgb:
-            print("The demo requires Depth camera with Color sensor")
-            exit(0)
-
-        self.config.enable_stream(rs.stream.depth, 640, 480, rs.format.z16, 30)
-
-        if self.device_product_line == 'L500':
-            self.config.enable_stream(
-                rs.stream.color, 960, 540, rs.format.bgr8, 30)
-        else:
-            self.config.enable_stream(
-                rs.stream.color, 640, 480, rs.format.bgr8, 30)
-
-        # Start streaming
-        self.pipeline.start(self.config)
-        align_to = rs.stream.color
-        self.align = rs.align(align_to)
-
-        print("Stream has started!!")
-
-    def get_frame_stream(self):
-        # Wait for a coherent pair of frames: depth and color
-        frames = self.pipeline.wait_for_frames()
-        depth_frame = frames.get_depth_frame()
-        color_frame = frames.get_color_frame()
-        # if not depth_frame or not color_frame:
-        #     continue
-
-        # Convert images to numpy arrays
-        depth_image = np.asanyarray(depth_frame.get_data())
-        color_image = np.asanyarray(color_frame.get_data())
-
-        # Apply colormap on depth image (image must be converted to 8-bit per pixel first)
-        depth_colormap = cv2.applyColorMap(cv2.convertScaleAbs(
-            depth_image, alpha=0.03), cv2.COLORMAP_JET)
-
-        depth_colormap_dim = depth_colormap.shape
-        color_colormap_dim = color_image.shape
-
-        # If depth and color resolutions are different, resize color image to match depth image for display
-        if depth_colormap_dim != color_colormap_dim:
-            resized_color_image = cv2.resize(color_image, dsize=(
-                depth_colormap_dim[1], depth_colormap_dim[0]), interpolation=cv2.INTER_AREA)
-            images = np.hstack((resized_color_image, depth_colormap))
-        else:
-            images = np.hstack((color_image, depth_colormap))
-
-        ret, jpeg = cv2.imencode('.jpg', images)
-        return jpeg.tobytes()
-
-    def __del__(self):
-        self.pipeline.stop()
-        self.video.release()
+_video_cam = VideoCamera()
+_realsense = Realsense()
+mrcnn = MaskRCNN()
 
 
 def gen(camera):
@@ -108,31 +20,62 @@ def gen(camera):
 
 def genRealsense(camera):
     while True:
-        frame = camera.get_frame_stream()
-        # print(frame)
+        # frame = camera.get_frame_stream()
+        # yield (b'--frame\r\n'
+        #        b'Content-Type: image/jpeg\r\n\r\n' + frame + b'\r\n\r\n')
+
+        # Get frame in real time from Realsense camera
+        ret, bgr_frame, depth_frame = camera.get_frame_stream()
+
+        print("Got bgr_frame, depth_frame")
+
+        # Get object mask
+        boxes, classes, contours, centers = mrcnn.detect_objects_mask(
+            bgr_frame)
+
+        # Draw object mask
+        bgr_frame = mrcnn.draw_object_mask(bgr_frame)
+
+        # Show depth info of the objects
+        mrcnn.draw_object_info(bgr_frame, depth_frame)
+
+        # cv2.imshow("depth frame", depth_frame)
+        # cv2.imshow("Bgr frame", bgr_frame)
+
+        ret, depth_jpg = cv2.imencode('.jpg', depth_frame)
+        ret, color_jpg = cv2.imencode('.jpg', bgr_frame)
+
+        depth_jpg = depth_jpg.tobytes()
+        color_jpg = color_jpg.tobytes()
+
         yield (b'--frame\r\n'
-               b'Content-Type: image/jpeg\r\n\r\n' + frame + b'\r\n\r\n')
+               b'Content-Type: image/jpeg\r\n\r\n' + color_jpg + b'\r\n\r\n')
+
+        key = cv2.waitKey(1)
+        if key == 27:
+            break
+
+    _realsense.release()
+    cv2.destroyAllWindows()
 
 
-@app.route('/realsense')
+@ app.route('/realsense')
 def realsense():
-    print("hit realsense member")
+    print("hit /realsense flask route")
 
-    # run measure_object_distance
-    # yield run()
-
-    # return "completed"
-    return Response(genRealsense(RealsenseCamera()),
+    return Response(genRealsense(_realsense),
                     mimetype='multipart/x-mixed-replace; boundary=frame')
 
 
-@app.route('/video_feed')
+@ app.route('/video_feed')
 def video_feed():
-    return Response(gen(VideoCamera()),
+    print("hit /video_feed flask route")
+
+    return Response(gen(_video_cam),
                     mimetype='multipart/x-mixed-replace; boundary=frame')
 
 
-@app.route('/members')
+@ app.route('/members')
 def members():
     return {'members': ['John', 'Mary', 'Bob']}
 

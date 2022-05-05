@@ -52,7 +52,7 @@ function Main() {
         </Grid>
         <Grid item xs={4}>
           <Button
-            onClick={"/"}
+            onClick={() => navigate("/")}
             sx={{ height: "20vh", width: "100%" }}
             variant="outlined"
           >
