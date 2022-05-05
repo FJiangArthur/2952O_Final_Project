@@ -63,13 +63,13 @@ xoutDepth.setStreamName("depth")
 
 # Properties
 camRgb.setPreviewSize(416, 416)
-camRgb.setResolution(dai.ColorCameraProperties.SensorResolution.THE_1080_P)
+camRgb.setResolution(dai.ColorCameraProperties.SensorResolution.THE_4_K)
 camRgb.setInterleaved(False)
 camRgb.setColorOrder(dai.ColorCameraProperties.ColorOrder.BGR)
 
-monoLeft.setResolution(dai.MonoCameraProperties.SensorResolution.THE_400_P)
+monoLeft.setResolution(dai.MonoCameraProperties.SensorResolution.THE_480_P)
 monoLeft.setBoardSocket(dai.CameraBoardSocket.LEFT)
-monoRight.setResolution(dai.MonoCameraProperties.SensorResolution.THE_400_P)
+monoRight.setResolution(dai.MonoCameraProperties.SensorResolution.THE_480_P)
 monoRight.setBoardSocket(dai.CameraBoardSocket.RIGHT)
 
 # setting node configs
@@ -78,7 +78,7 @@ stereo.setDefaultProfilePreset(dai.node.StereoDepth.PresetMode.HIGH_DENSITY)
 spatialDetectionNetwork.setBlobPath(nnBlobPath)
 spatialDetectionNetwork.setConfidenceThreshold(0.5)
 spatialDetectionNetwork.input.setBlocking(False)
-spatialDetectionNetwork.setBoundingBoxScaleFactor(0.5)
+spatialDetectionNetwork.setBoundingBoxScaleFactor(0.4)
 spatialDetectionNetwork.setDepthLowerThreshold(100)
 spatialDetectionNetwork.setDepthUpperThreshold(5000)
 
@@ -105,6 +105,7 @@ spatialDetectionNetwork.boundingBoxMapping.link(xoutBoundingBoxDepthMapping.inpu
 stereo.depth.link(spatialDetectionNetwork.inputDepth)
 spatialDetectionNetwork.passthroughDepth.link(xoutDepth.input)
 
+# def oak_d_lite_control(process_queue):
 # Connect to device and start pipeline
 with dai.Device(pipeline) as device:
 
@@ -115,6 +116,7 @@ with dai.Device(pipeline) as device:
     depthQueue = device.getOutputQueue(name="depth", maxSize=4, blocking=False)
 
     startTime = time.monotonic()
+    startTime_que = time.monotonic()
     counter = 0
     fps = 0
     color = (255, 255, 255)
@@ -139,7 +141,14 @@ with dai.Device(pipeline) as device:
             startTime = current_time
 
         detections = inDet.detections
+
+        mirobot_info_que = {}
+
         if len(detections) != 0:
+            current_time_que = time.monotonic()
+
+
+            detections = inDet.detections
             boundingBoxMapping = xoutBoundingBoxDepthMappingQueue.get()
             roiDatas = boundingBoxMapping.getConfigData()
 
@@ -169,6 +178,10 @@ with dai.Device(pipeline) as device:
                 label = labelMap[detection.label]
             except:
                 label = detection.label
+
+            mirobot_info_que[label] = {'x': int(detection.spatialCoordinates.x),
+                                         'y': int(detection.spatialCoordinates.y),
+                                         'z': int(detection.spatialCoordinates.z)}
             cv2.putText(frame, str(label), (x1 + 10, y1 + 20), cv2.FONT_HERSHEY_TRIPLEX, 0.5, 255)
             cv2.putText(frame, "{:.2f}".format(detection.confidence*100), (x1 + 10, y1 + 35), cv2.FONT_HERSHEY_TRIPLEX, 0.5, 255)
             cv2.putText(frame, f"X: {int(detection.spatialCoordinates.x)} mm", (x1 + 10, y1 + 50), cv2.FONT_HERSHEY_TRIPLEX, 0.5, 255)
@@ -176,6 +189,10 @@ with dai.Device(pipeline) as device:
             cv2.putText(frame, f"Z: {int(detection.spatialCoordinates.z)} mm", (x1 + 10, y1 + 80), cv2.FONT_HERSHEY_TRIPLEX, 0.5, 255)
 
             cv2.rectangle(frame, (x1, y1), (x2, y2), color, cv2.FONT_HERSHEY_SIMPLEX)
+
+        if (current_time_que - startTime_que) > 1:
+            process_queue.put(mirobot_info_que)
+            startTime_que = current_time_que
 
         cv2.putText(frame, "NN fps: {:.2f}".format(fps), (2, frame.shape[0] - 4), cv2.FONT_HERSHEY_TRIPLEX, 0.4, color)
         cv2.imshow("depth", depthFrameColor)

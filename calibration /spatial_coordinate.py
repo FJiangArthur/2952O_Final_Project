@@ -3,7 +3,7 @@
 import cv2
 import depthai as dai
 
-stepSize = 0.05
+stepSize = 0.01
 
 newConfig = False
 
@@ -19,8 +19,9 @@ spatialLocationCalculator = pipeline.create(dai.node.SpatialLocationCalculator)
 
 xoutRgb = pipeline.create(dai.node.XLinkOut)
 xoutRgb.setStreamName("rgb")
-camRgb.setPreviewSize(416, 416)
-camRgb.setResolution(dai.ColorCameraProperties.SensorResolution.THE_1080_P)
+# camRgb.setPreviewSize(640,400)
+camRgb.setPreviewSize(640, 480)
+camRgb.setResolution(dai.ColorCameraProperties.SensorResolution.THE_4_K)
 camRgb.setInterleaved(False)
 camRgb.setColorOrder(dai.ColorCameraProperties.ColorOrder.BGR)
 camRgb.preview.link(xoutRgb.input)
@@ -34,9 +35,9 @@ xoutSpatialData.setStreamName("spatialData")
 xinSpatialCalcConfig.setStreamName("spatialCalcConfig")
 
 # Properties
-monoLeft.setResolution(dai.MonoCameraProperties.SensorResolution.THE_400_P)
+monoLeft.setResolution(dai.MonoCameraProperties.SensorResolution.THE_480_P)
 monoLeft.setBoardSocket(dai.CameraBoardSocket.LEFT)
-monoRight.setResolution(dai.MonoCameraProperties.SensorResolution.THE_400_P)
+monoRight.setResolution(dai.MonoCameraProperties.SensorResolution.THE_480_P)
 monoRight.setBoardSocket(dai.CameraBoardSocket.RIGHT)
 
 # lrcheck = False
@@ -49,11 +50,11 @@ stereo.setDefaultProfilePreset(dai.node.StereoDepth.PresetMode.HIGH_DENSITY)
 # Config
 # 2952: This is the region for calibrate
 topLeft = dai.Point2f(0.5, 0.5)
-bottomRight = dai.Point2f(0.55, 0.55)
+bottomRight = dai.Point2f(0.51, 0.51)
 
 config = dai.SpatialLocationCalculatorConfigData()
 config.depthThresholds.lowerThreshold = 100
-config.depthThresholds.upperThreshold = 10000
+config.depthThresholds.upperThreshold = 1000
 config.roi = dai.Rect(topLeft, bottomRight)
 
 spatialLocationCalculator.inputConfig.setWaitForMessage(False)
@@ -105,6 +106,8 @@ with dai.Device(pipeline) as device:
             depthMin = depthData.depthMin
             depthMax = depthData.depthMax
 
+            # print(frame.size)
+            # print(depthFrameColor.size)
             fontType = cv2.FONT_HERSHEY_TRIPLEX
             cv2.rectangle(depthFrameColor, (xmin, ymin), (xmax, ymax), color, cv2.FONT_HERSHEY_SCRIPT_SIMPLEX)
             cv2.putText(depthFrameColor, f"X: {int(depthData.spatialCoordinates.x)} mm", (xmin + 10, ymin + 20), fontType, 0.5, 255)
@@ -120,7 +123,7 @@ with dai.Device(pipeline) as device:
                         fontType, 0.5, 255)
         # Sh
         # Show the frame
-        # cv2.imshow("depth", depthFrameColor)
+        cv2.imshow("depth", depthFrameColor)
         cv2.imshow("rgb", frame)
 
         key = cv2.waitKey(1)

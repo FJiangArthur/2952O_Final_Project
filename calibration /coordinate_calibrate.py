@@ -35,17 +35,17 @@ def rigid_transform_3D(A, B):
 
 
 if __name__=='__main__':
-    a = np.array([[-93, -152, 506],
-                  [-96, -84, 522],
-                  [-63, 119, 574],
-                  [63, -12, 567],
-                  [-147, 172, 570]])
+    a = np.array([[20, -147, 810],
+                  [-152, -110, 825],
+                  [-276, -35, 950],
+                  [-58, -30, 1100],
+                  [-68, -65, 981]])
 
-    b = np.array([[15, -20, 0],
-                  [16, -15, 0],
-                  [20, 0, 0],
-                  [30, -10, 0],
-                  [15, 5, 0]])
+    b = np.array([[20, 20, 2],
+                  [25, 5, 2],
+                  [20, -10, 2],
+                  [0, 0, 2],
+                  [10, 5, 2]])
 
     # Following code are for testing using the last two points from a and b
 
@@ -68,7 +68,7 @@ if __name__=='__main__':
     bb = np.matmul(a, r.T) + t.reshape([1, 3])
     print('b-bb:', b - bb)
 
-    obj_cord_camera=np.array([[-60, -12, 541]])
+    obj_cord_camera=np.array([[-10, -155, 750]])
     obj_cord_mirobot = np.matmul(obj_cord_camera, r.T) + t.reshape([1, 3])
     print(obj_cord_mirobot)
     #

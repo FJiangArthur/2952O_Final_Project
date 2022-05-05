@@ -13,6 +13,13 @@ cd flask-server
 python3 server.py
 
 ## Getting Started
+### 
+```shell
+bash -c "$(curl -fL https://docs.luxonis.com/install_dependencies.sh)"
+```
+```shell 
+python3 -m pip install opencv-python --force-reinstall --no-cache-dir
+```
 
 ### Launch
 
