@@ -6,6 +6,7 @@ import time
 
 # https://pysource.com/instance-segmentation-mask-rcnn-with-python-and-opencv
 from wlkata_mirobot import WlkataMirobot
+# from mirobot import Mirobot
 import time
 import cv2
 import numpy as np
@@ -104,8 +105,9 @@ def mirobot_control(process_q=None):
     #     end_effector_abs['z'] = end_effector_abs['z'] + step
 
 
-    # arm = WlkataMirobot(portname='/dev/cu.usbserial-1440')
-    arm = WlkataMirobot(portname=' /dev/ttyUSB0')
+    # arm = WlkataMirobot(portname='/dev/cu.usbserial-14120')
+    arm = WlkataMirobot(portname='/dev/ttyUSB0')
+    # arm = WlkataMirobot(portname='COM3')
     end_effector_abs = {'x': 202, 'y': 0, 'z': 181}  # Calibration numbers y->left, right, x->front, back
 
     mirobot_location = None
