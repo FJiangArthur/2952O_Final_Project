@@ -63,13 +63,13 @@ xoutDepth.setStreamName("depth")
 
 # Properties
 camRgb.setPreviewSize(416, 416)
-camRgb.setResolution(dai.ColorCameraProperties.SensorResolution.THE_4_K)
+camRgb.setResolution(dai.ColorCameraProperties.SensorResolution.THE_1080_P)
 camRgb.setInterleaved(False)
 camRgb.setColorOrder(dai.ColorCameraProperties.ColorOrder.BGR)
 
-monoLeft.setResolution(dai.MonoCameraProperties.SensorResolution.THE_480_P)
+monoLeft.setResolution(dai.MonoCameraProperties.SensorResolution.THE_400_P)
 monoLeft.setBoardSocket(dai.CameraBoardSocket.LEFT)
-monoRight.setResolution(dai.MonoCameraProperties.SensorResolution.THE_480_P)
+monoRight.setResolution(dai.MonoCameraProperties.SensorResolution.THE_400_P)
 monoRight.setBoardSocket(dai.CameraBoardSocket.RIGHT)
 
 # setting node configs
@@ -188,6 +188,7 @@ def oak_d_lite_control(process_queue):
                 cv2.rectangle(frame, (x1, y1), (x2, y2), color, cv2.FONT_HERSHEY_SIMPLEX)
 
             if (current_time_que - startTime_que) > 1:
+                print(mirobot_info_que)
                 process_queue.put(mirobot_info_que)
                 startTime_que = current_time_que
 
@@ -197,3 +198,6 @@ def oak_d_lite_control(process_queue):
 
             if cv2.waitKey(1) == ord('q'):
                 break
+                
+if __name__ == '__main__':
+    oak_d_lite_control()
