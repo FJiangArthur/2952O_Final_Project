@@ -1,10 +1,19 @@
 # https://pysource.com/instance-segmentation-mask-rcnn-with-python-and-opencv
+from wlkata_mirobot import WlkataMirobot
+import time
 import cv2
 import numpy as np
+
+
+
+arm = WlkataMirobot(portname='/dev/cu.usbserial-1410')
+arm.home()
+
 
 class MaskRCNN:
     def __init__(self):
         # Loading Mask RCNN
+        
         self.net = cv2.dnn.readNetFromTensorflow("dnn/frozen_inference_graph_coco.pb",
                                             "dnn/mask_rcnn_inception_v2_coco_2018_01_28.pbtxt")
         self.net.setPreferableBackend(cv2.dnn.DNN_BACKEND_CUDA)
@@ -31,6 +40,82 @@ class MaskRCNN:
 
         # Distances
         self.distances = []
+        
+        
+        
+            
+    def move_robot(self, cx, cy, obj_class):
+#    		spacing_mm = 100
+#    		arm.set_gripper_spacing(spacing_mm)
+#    		time.sleep(2)
+   		# gripper open
+#    		arm.gripper_open()
+#    		time.sleep(1)
+   		
+   		
+   		xNorm = cx / 1280
+   		yNorm = cy / 720
+   		
+   		xScaled =  (xNorm * 450) + -215
+   		yScaled =  364 - ((yNorm * 200) + 117)
+   		
+#    		if(cx > 800):
+#    			xScaled =  (xNorm * 450) + -175
+#    			
+#    		if(cx < 800):
+#    			
+#    			xScaled =  (xNorm * 450) + -215
+   			
+   			
+   		
+
+#    		xScaled =  round(xNorm * 300)
+#    		yScaled =  round(yNorm * 300) + 50
+
+# 		yScaled = cx / 6.4 
+# 		xScaled = cy / 3.6 
+   		
+   		print("XScaled: " + str(xScaled))
+   		print("YScaled: " + str(yScaled))
+   		
+   		
+   		arm.set_tool_pose(yScaled, -xScaled, 160)
+   		
+   		time.sleep(1)
+   		time.sleep(1)
+   		
+   		arm.set_tool_pose(yScaled, -xScaled, 50)
+   		
+   		arm.pump_suction()
+   		
+   		time.sleep(1)
+   		
+   		arm.set_tool_pose(yScaled, -xScaled, 160)
+   		time.sleep(1)
+   		
+   		if(obj_class == "cow" or obj_class == "cat" or obj_class == "bird" or obj_class == "dog" or obj_class == "teddy bear"):
+   			arm.set_tool_pose(127,  225, 160)
+   			time.sleep(1)
+   			arm.set_tool_pose(127,  225, 50)
+   			arm.pump_off()	
+   			time.sleep(1)
+   			arm.set_tool_pose(127,  225, 160)
+   			
+   			
+   		if(obj_class == "truck" or obj_class == "car" or obj_class == "bus"):
+   			arm.set_tool_pose(37,  175, 160)
+   			time.sleep(1)
+   			arm.set_tool_pose(37,  175, 50)
+   			arm.pump_off()	
+   			time.sleep(1)	
+   			arm.set_tool_pose(37,  175, 160)
+   					
+   			
+   		# gripper close
+#    		arm.gripper_close()
+   		time.sleep(1)
+   		arm.set_tool_pose(177,  45, 121)
+   		# api.go_to_zero()
 
 
     def detect_objects_mask(self, bgr_frame):
@@ -42,6 +127,9 @@ class MaskRCNN:
         # Detect objects
         frame_height, frame_width, _ = bgr_frame.shape
         detection_count = boxes.shape[2]
+        
+#         print(frame_height)
+#         print(frame_width)
 
         # Object Boxes
         self.obj_boxes = []
@@ -103,6 +191,8 @@ class MaskRCNN:
 
     def draw_object_info(self, bgr_frame, depth_frame):
         # loop through the detection
+        depth_mm = 0
+		
         for box, class_id, obj_center in zip(self.obj_boxes, self.obj_classes, self.obj_centers):
             x, y, x2, y2 = box
 
@@ -112,6 +202,8 @@ class MaskRCNN:
             cx, cy = obj_center
 
             depth_mm = depth_frame[cy, cx]
+            
+            
 
             cv2.line(bgr_frame, (cx, y), (cx, y2), color, 1)
             cv2.line(bgr_frame, (x, cy), (x2, cy), color, 1)
@@ -121,11 +213,17 @@ class MaskRCNN:
             cv2.putText(bgr_frame, class_name.capitalize(), (x + 5, y + 25), 0, 0.8, (255, 255, 255), 2)
             cv2.putText(bgr_frame, "{} cm".format(depth_mm / 10), (x + 5, y + 60), 0, 1.0, (255, 255, 255), 2)
             cv2.rectangle(bgr_frame, (x, y), (x2, y2), color, 1)
-
-
-
-
+            print("Class: " + class_name)
+            print("Coords: x- " + str(cx) + ", y- " + str(cy))
+            if(class_name == "cow" or class_name == "cat" or class_name == "bird" or class_name == "dog" or class_name == "bear" or class_name == "truck" or class_name == "car" or class_name == "bus" or class_name == "teddy bear") :
+            	if(cx > 400):
+            		self.move_robot(cx, cy, class_name)
+        
+#         if(depth_mm / 10 > 50):
+#         	self.move_robot()
         return bgr_frame
+        
+        
 
 
 
