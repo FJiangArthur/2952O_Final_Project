@@ -13,16 +13,18 @@ import time
 
 
 if __name__ == '__main__':
-
+    # https://pythonspeed.com/articles/python-multiprocessing/?msclkid=413c793fd06911ecbe91ca2528ab95d1
+    multiprocessing.set_start_method("spawn")
     queue = multiprocessing.Queue()
+    # return_queue = multiprocessing.Queue()
+    # return_queue.put("Start")
 
     mirobot_p = multiprocessing.Process(target=mirobot_control, args=(queue,))
     mirobot_p.start()
 
-    realsense = multiprocessing.Process(target=init_realsense(), args=(queue,))
+    # time.sleep(10)
+    realsense = multiprocessing.Process(target=init_realsense, args=(queue,))
     realsense.start()
-
-    # queue.put(MyFancyClass('Fancy Dan'))
 
     # Wait for the worker to finish
     queue.close()
