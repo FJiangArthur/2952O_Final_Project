@@ -106,7 +106,7 @@ def mirobot_control(process_q=None):
 
 
     # arm = WlkataMirobot(portname='/dev/cu.usbserial-14120')
-    arm = WlkataMirobot(portname='/dev/ttyUSB0')
+    arm = WlkataMirobot()
     # arm = WlkataMirobot(portname='COM3')
     end_effector_abs = {'x': 202, 'y': 0, 'z': 181}  # Calibration numbers y->left, right, x->front, back
 
