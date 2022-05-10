@@ -75,12 +75,12 @@ function Main() {
         </Grid>
       </Grid>
       <Typography variant="body1" align="center" sx={{ mt: 4, padding: 1 }}>
-        <a href={github} target="_blank">
+        <a href={github} target="_blank" rel="noreferrer">
           GitHub
         </a>
       </Typography>
       <Typography variant="body1" align="center" sx={{ padding: 1 }}>
-        <a href={""} target="_blank">
+        <a href={""} target="_blank" rel="noreferrer">
           Poster
         </a>
       </Typography>
