@@ -6,6 +6,7 @@ import { useNavigate } from "react-router-dom";
 
 function Main() {
   const navigate = useNavigate();
+  const github = "https://github.com/FJiangArthur/2952O_Final_Project";
 
   return (
     <div>
@@ -21,7 +22,7 @@ function Main() {
         our final project for Brown's CS2952-O (Advanced 3D Perception for
         Robotics), we aim to provide a generalizable interface for object
         detection and un-clustering using the Mirobot Robotic Arm. We compare 2
-        off the shelve low-cost cameras the Intel Realsense and the OpenCV
+        off the shelve low-cost cameras - the Intel Realsense and the OpenCV
         OAKD-Lite for this task. We also test our approach using 2 pre-trained
         object detection models, the MaskRCNN and the YOLOv5. In short, we
         create and end-to-end workflow of object detection, un-clustering, and
@@ -73,6 +74,19 @@ function Main() {
           </Button>
         </Grid>
       </Grid>
+      <Typography variant="body1" align="center" sx={{ mt: 4, padding: 1 }}>
+        <a href={github} target="_blank">
+          GitHub
+        </a>
+      </Typography>
+      <Typography variant="body1" align="center" sx={{ padding: 1 }}>
+        <a href={""} target="_blank">
+          Poster
+        </a>
+      </Typography>
+      <Typography variant="body1" align="center" sx={{ padding: 1 }}>
+        <b>Team:</b> Fengyi Arthur, Alejandro Romero, Tarun Rajnish
+      </Typography>
     </div>
   );
 }
