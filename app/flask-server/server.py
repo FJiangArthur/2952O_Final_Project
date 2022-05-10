@@ -2,13 +2,13 @@ from flask import Flask, Response
 
 from realsense import *
 from webcam import *
-from mask_rcnn import *
+from web_mask_rcnn import *
 
 app = Flask(__name__)
 
 _video_cam = VideoCamera()
 _realsense = Realsense()
-mrcnn = MaskRCNN()
+mrcnn = WebMaskRCNN()
 
 
 def gen(camera):
@@ -59,12 +59,20 @@ def genRealsense(camera):
     cv2.destroyAllWindows()
 
 
-@ app.route('/realsense')
+@ app.route('/realsenseMask')
 def realsense():
-    print("hit /realsense flask route")
+    print("hit /realsenseMask flask route")
 
     return Response(genRealsense(_realsense),
                     mimetype='multipart/x-mixed-replace; boundary=frame')
+
+
+@ app.route('/realsenseYolo')
+def realsense():
+    print("hit /realsenseYolo flask route")
+
+    # return Response(genRealsense(_realsense),
+    #                 mimetype='multipart/x-mixed-replace; boundary=frame')
 
 
 @ app.route('/video_feed')

@@ -16,13 +16,17 @@ function Main() {
         2952-O Final Project
       </Typography>
       <Typography variant="body1" align="left" sx={{ mt: 4, padding: 1 }}>
-        Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod
-        tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim
-        veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea
-        commodo consequat. Duis aute irure dolor in reprehenderit in voluptate
-        velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint
-        occaecat cupidatat non proident, sunt in culpa qui officia deserunt
-        mollit anim id est laborum.
+        Traditionally, object manipulation and sorting using a robotic arm uses
+        expensive hardware, cameras, and non-generalizable approaches. Through
+        our final project for Brown's CS2952-O (Advanced 3D Perception for
+        Robotics), we aim to provide a generalizable interface for object
+        detection and un-clustering using the Mirobot Robotic Arm. We compare 2
+        off the shelve low-cost cameras the Intel Realsense and the OpenCV
+        OAKD-Lite for this task. We also test our approach using 2 pre-trained
+        object detection models, the MaskRCNN and the YOLOv5. In short, we
+        create and end-to-end workflow of object detection, un-clustering, and
+        delivery using the Mirobot and a generalizable and accessible user
+        interface.
       </Typography>
       <Grid
         container
@@ -32,7 +36,7 @@ function Main() {
         mt={4}
         padding={1}
       >
-        <Grid item xs={4}>
+        <Grid item xs={3}>
           <Button
             onClick={() => navigate("/simple")}
             sx={{ height: "20vh", width: "100%" }}
@@ -41,16 +45,25 @@ function Main() {
             Simple Video Stream
           </Button>
         </Grid>
-        <Grid item xs={4}>
+        <Grid item xs={3}>
           <Button
-            onClick={() => navigate("/realsense")}
+            onClick={() => navigate("/realsenseMask")}
             sx={{ height: "20vh", width: "100%" }}
             variant="outlined"
           >
             Intel RealSense
           </Button>
         </Grid>
-        <Grid item xs={4}>
+        <Grid item xs={3}>
+          <Button
+            onClick={() => navigate("/realsenseYolo")}
+            sx={{ height: "20vh", width: "100%" }}
+            variant="outlined"
+          >
+            Intel RealSense
+          </Button>
+        </Grid>
+        <Grid item xs={3}>
           <Button
             onClick={() => navigate("/")}
             sx={{ height: "20vh", width: "100%" }}
