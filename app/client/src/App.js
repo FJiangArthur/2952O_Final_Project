@@ -7,7 +7,8 @@ import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
 
 import "./App.css";
 import Main from "./components/main/Main";
-import Realsense from "./components/realsense/Realsense";
+import RealsenseMask from "./components/realsense/RealsenseMask";
+import RealsenseYolo from "./components/realsense/RealsenseYolo";
 import Simple from "./components/simple/Simple";
 
 function App() {
@@ -34,7 +35,8 @@ function App() {
             <Routes>
               <Route path="/" element={<Main />}></Route>
               <Route path="/simple" element={<Simple />}></Route>
-              <Route path="/realsense" element={<Realsense />}></Route>
+              <Route path="/realsenseMask" element={<RealsenseMask />}></Route>
+              <Route path="/realsenseYolo" element={<RealsenseYolo />}></Route>
             </Routes>
           </Box>
         </Container>

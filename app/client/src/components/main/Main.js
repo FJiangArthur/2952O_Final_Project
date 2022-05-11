@@ -21,13 +21,16 @@ function Main() {
         expensive hardware, cameras, and non-generalizable approaches. Through
         our final project for Brown's CS2952-O (Advanced 3D Perception for
         Robotics), we aim to provide a generalizable interface for object
-        detection and un-clustering using the Mirobot Robotic Arm. We compare 2
-        off the shelve low-cost cameras - the Intel Realsense and the OpenCV
-        OAKD-Lite for this task. We also test our approach using 2 pre-trained
-        object detection models, the MaskRCNN and the YOLOv5. In short, we
-        create and end-to-end workflow of object detection, un-clustering, and
-        delivery using the Mirobot and a generalizable and accessible user
-        interface.
+        detection and segregation using the Mirobot Robotic Arm and camera
+        visual input. We compare 2 off the shelve low-cost depth cameras - the
+        Intel Realsense and the OpenCV OAKD-Lite for this task. We also test our
+        approach using 2 pre-trained object detection models, the MaskRCNN and
+        the YOLOv5.{" "}
+        <b>
+          In short, we create and end-to-end workflow of object detection,
+          pick-and-place segregation, and delivery using the Mirobot, coupled
+          with a generalizable user interface.
+        </b>
       </Typography>
       <Grid
         container
@@ -52,7 +55,7 @@ function Main() {
             sx={{ height: "20vh", width: "100%" }}
             variant="outlined"
           >
-            Intel RealSense
+            Intel RealSense (MaskRCNN)
           </Button>
         </Grid>
         <Grid item xs={3}>
@@ -61,7 +64,7 @@ function Main() {
             sx={{ height: "20vh", width: "100%" }}
             variant="outlined"
           >
-            Intel RealSense
+            Intel RealSense (YOLOv5)
           </Button>
         </Grid>
         <Grid item xs={3}>
