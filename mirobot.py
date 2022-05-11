@@ -51,15 +51,22 @@ def move_robot(arm, cx, cy):
 
 
 
-def mirobot_control(process_q=None):
+
+def mirobot_control(process_q=None,stop_queue=None):
     arm = WlkataMirobot()
     # arm = WlkataMirobot(portname='COM3')
+    # arm = WlkataMirobot(portname='/dev/cu.usbserial-14120')
+
     end_effector_abs = {'x': 202, 'y': 0, 'z': 181}  # Calibration numbers y->left, right, x->front, back
 
     mirobot_location = None
     target_location = None
-    print("Start Homing!")
+
     arm.home()
+    # arm.set_tool_type(WlkataMirobotTool.SUCTION_CUP)
+    # I modified the source code to setup suction cup natively at boot up
+    # /wlkata_mirobot/wlkata_mirobot.py:125
+    print("Start Homing!")
 
     def miro_move_left_right(step=100, relative=False):
         target = end_effector_abs['y'] + step
@@ -107,16 +114,6 @@ def mirobot_control(process_q=None):
                           roll=0.0, pitch=0.0, yaw=0.0, mode='p2p', speed=2000, is_relative=relative)
         end_effector_abs['z'] = target
 
-    # def move_down(step=100, relative=False):
-    #     arm.set_tool_pose(x=end_effector_abs['x'],
-    #                       y=end_effector_abs['y'],
-    #                       z=end_effector_abs['z'] - step,
-    #                       roll=0.0, pitch=0.0, yaw=0.0, mode='p2p', speed=2000, is_relative=relative)
-    #     end_effector_abs['z'] = end_effector_abs['z'] + step
-
-
-    # arm = WlkataMirobot(portname='/dev/cu.usbserial-14120')
-    
 
     print(arm.get_status())
     once = False
@@ -126,87 +123,64 @@ def mirobot_control(process_q=None):
         mirobot_info_que = process_q.get()
         print(mirobot_info_que)
         if len(mirobot_info_que) != 0:
-            if 'clock' in mirobot_info_que and 0 not in mirobot_info_que['clock'] :
+            if 'clock' in mirobot_info_que and 0 not in mirobot_info_que['clock'].items() :
                 mirobot_location = mirobot_info_que['clock']
-            if 'car' in mirobot_info_que and 0 not in mirobot_info_que['car']:
+            if 'car' in mirobot_info_que and 0 not in mirobot_info_que['car'].items():
                 target_location = mirobot_info_que['car']
 
 
         if target_location != None and mirobot_location != None:
+            stop_queue.put("Stop")
             if not once: 
-                if abs(mirobot_location['x'] - target_location['x']) >= 50:
-                    print("Moving left-right")
-                    print("Mirobot Clock location: ",mirobot_location)
-                    print("Target Location:", target_location)
-                    print("Mirobot end effector location:", end_effector_abs)
-                    # miro_move_left_right(step=(target_location['x'] - mirobot_location['x'])*230/350)
-                    miro_move_left_right(step=50 * (-1) * np.sign(mirobot_location['x'] - target_location['x']))
-                    # time.sleep(2)
+                # if abs(mirobot_location['x'] - target_location['x']) >= 50:
+                #     miro_move_left_right(step= (1.6) *(mirobot_location['x'] - target_location['x']) * np.sign(mirobot_location['x'] - target_location['x']))
+                #     time.sleep(2)
+                #
+                # if abs(mirobot_location['z'] - target_location['z']) >= 50:
+                #     move_front_back(step=50 * np.sign(mirobot_location['z'] - target_location['z']))
+                #     time.sleep(2)
+                #
+                # if abs(mirobot_location['y'] - target_location['y']) >= 50:
+                #     move_up_down(step= 150 * (1) * np.sign(mirobot_location['y'] - target_location['y']))
+                #     time.sleep(2)
 
-
-                if abs(mirobot_location['z'] - target_location['z']) >= 100:
-                    print("Moving front-back")
-                    print("Mirobot Clock location: ", mirobot_location)
-                    print("Target Location:", target_location)
-                    print("Mirobot end effector location:", end_effector_abs)
-                    # move_front_back(step=(mirobot_location['z'] - target_location['z'])*290/500)
-                    move_front_back(step=50 * np.sign(mirobot_location['z'] - target_location['z']))
-                    # time.sleep(2)
-
-
-                if abs(mirobot_location['y'] - target_location['y']) >= 50:
-                    move_up_down(step= 180 * (1) * np.sign(mirobot_location['y'] - target_location['y']))
-                    # time.sleep(2)
-                
+                ## Hard Coded
+                arm.set_tool_pose(y= int((-0.4) *(mirobot_location['x'] - target_location['x']) * np.sign(mirobot_location['x'] - target_location['x'])),
+                                  x= int((0.07) *(mirobot_location['z'] - target_location['z']) * np.sign(mirobot_location['z'] - target_location['z'])),
+                                  z= -100,
+                                  roll=0.0, pitch=0.0, yaw=0.0, mode='p2p', speed=2000, is_relative=True)
                 once = True
-            
-            if once and not twice:
-                if abs(mirobot_location['x'] - target_location['x']) >= 50:
-                    print("Moving left-right")
-                    print("Mirobot Clock location: ",mirobot_location)
-                    print("Target Location:", target_location)
-                    print("Mirobot end effector location:", end_effector_abs)
-                    # miro_move_left_right(step=(target_location['x'] - mirobot_location['x'])*230/350)
-                    miro_move_left_right(step=10 * (-1) * np.sign(mirobot_location['x'] - target_location['x']))
-                    # time.sleep(2)
+                stop_queue.get() # Restart
+
+            elif once and not twice:
+                if abs(mirobot_location['x'] - target_location['x']) >= 10:
+                    arm.set_tool_pose(y= int((-0.4) *(mirobot_location['x'] - target_location['x']) * np.sign(mirobot_location['x'] - target_location['x'])),
+                                         is_relative=True)
+
+                if abs(mirobot_location['z'] - target_location['z']) >= 10:
+                    arm.set_tool_pose(x=int(0.15 * (mirobot_location['z'] - target_location['z']) *
+                                         np.sign(mirobot_location['z'] - target_location['z'])), is_relative=True)
 
 
-                if abs(mirobot_location['z'] - target_location['z']) >= 100:
-                    print("Moving front-back")
-                    print("Mirobot Clock location: ", mirobot_location)
-                    print("Target Location:", target_location)
-                    print("Mirobot end effector location:", end_effector_abs)
-                    # move_front_back(step=(mirobot_location['z'] - target_location['z'])*290/500)
-                    move_front_back(step=15 * np.sign(mirobot_location['z'] - target_location['z']))
-                    # time.sleep(2)
+                # move_up_down(step= 60 * (1) * np.sign(mirobot_location['y'] - target_location['y']))#abs(target_location['y'] - mirobot_location['y']))
+                arm.set_tool_pose(z= -40, is_relative=True)
 
+                arm.pump_suction()
+                time.sleep(3)
+                arm.set_tool_pose(z=140,
+                                  roll=0.0, pitch=0.0, yaw=0.0, mode='p2p', speed=2000, is_relative=True)
 
-                if abs(mirobot_location['y'] - target_location['y']) >= 50:
-                    print("Moving up-down")
-                    print("step:",(target_location['y'] - mirobot_location['y']))
-                    print("Mirobot end effector location:", end_effector_abs)
-                    # move_up_down(step= 60 * (1) * np.sign(mirobot_location['y'] - target_location['y']))#abs(target_location['y'] - mirobot_location['y']))
-                    move_up_down(step= 10 * (1) * np.sign(mirobot_location['y'] - target_location['y']))
-                    # time.sleep(2)
-
-            
-            arm.set_tool_type(WlkataMirobotTool.SUCTION_CUP)
-            arm.pump_suction()
-            time.sleep(5)
-            arm.set_tool_pose(x=end_effector_abs['x'],
-                          y=end_effector_abs['y'],
-                          z=180,
-                          roll=0.0, pitch=0.0, yaw=0.0, mode='p2p', speed=2000, is_relative=relative)
-            end_effector_abs['z'] = 180
-
-            arm.set_tool_pose(x=50,
-                          y=60,
-                          z=20,
-                          roll=0.0, pitch=0.0, yaw=0.0, mode='p2p', speed=2000, is_relative=relative)
-
-            end_effector_abs['z'] = 20
-            end_effector_abs['y'] = 60
-            end_effector_abs['x'] = 50
+                arm.set_tool_pose(x=0,
+                                  y=-20,
+                                  z=180,
+                                  roll=0.0, pitch=0.0, yaw=0.0, mode='p2p', speed=2000, is_relative=False)
+                time.sleep(5)
+                arm.pump_blowing()
+                arm.pump_off()
+                arm.set_tool_pose(x=202, y=0, z=181)
+                stop_queue.get()
+                twice = False
+                once = False
 
 if __name__ == '__main__':
     mirobot_control()

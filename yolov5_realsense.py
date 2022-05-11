@@ -9,7 +9,7 @@ import pyrealsense2 as rs
 import torch
 
 
-def init_realsense(process_que=None):
+def init_realsense(process_que=None, stop_queue=None):
     # Configure depth and color streams
     start_time = time.monotonic()
     model = torch.hub.load('ultralytics/yolov5', 'yolov5l6')
@@ -90,9 +90,13 @@ def init_realsense(process_que=None):
                         (int(box[0]), int(box[1]) + 40), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (255, 255, 255), 2)
             cv2.putText(img, 'z:' + str(z )[:4] + 'mm',
                         (int(box[0]), int(box[1]) - 20), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (255, 255, 255), 2)
-        
+
 
         cv2.imshow('dec_img', img)
+
+        for item in mirobot_info_que.items():
+            if 0 in item:
+                return None
         return mirobot_info_que
 
     # Start streaming
@@ -115,9 +119,8 @@ def init_realsense(process_que=None):
 
             results = model(color_image)
             boxs= results.pandas().xyxy[0].values
-            #boxs = np.load('temp.npy',allow_pickle=True)
             info_q = dectshow(color_image, boxs, depth_image, depth_intrin, process_que)
-            if (current_time - start_time) > 3:
+            if (current_time - start_time) > 3 and (info_q is not None) and (stop_queue.empty()):
                 start_time = current_time
                 process_que.put(info_q)
 
