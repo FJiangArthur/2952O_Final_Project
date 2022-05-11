@@ -28,8 +28,8 @@ function Main() {
         the YOLOv5.{" "}
         <b>
           In short, we create and end-to-end workflow of object detection,
-          pick-and-place segregation, and delivery using the Mirobot and a
-          generalizable and accessible user interface.
+          pick-and-place segregation, and delivery using the Mirobot, coupled
+          with a generalizable user interface.
         </b>
       </Typography>
       <Grid
