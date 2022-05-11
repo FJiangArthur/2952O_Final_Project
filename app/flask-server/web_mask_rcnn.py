@@ -5,6 +5,7 @@ import cv2
 import numpy as np
 
 arm = WlkataMirobot(portname='/dev/cu.usbserial-1410')
+print("arm initialized")
 arm.home()
 
 class WebMaskRCNN:

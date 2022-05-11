@@ -1,11 +1,14 @@
 from flask import Flask, Response
 import multiprocessing
-from web_mirobot import *
-from web_yolov5_realsense import init_realsense
+# from web_mirobot import *
+# from web_yolov5_realsense import init_realsense
 
 from realsense import *
+print("Imported realsense")
 from webcam import *
+print("Imported webcam")
 from web_mask_rcnn import *
+print("Imported realweb_mask_rcnnsense")
 
 app = Flask(__name__)
 
@@ -67,24 +70,24 @@ def realsenseMask():
 def realsenseYolo():
     print("hit /realsenseYolo flask route")
 
-    multiprocessing.set_start_method("spawn")
-    queue = multiprocessing.Queue()
-    stop_queue = multiprocessing.Queue()
+    # multiprocessing.set_start_method("spawn")
+    # queue = multiprocessing.Queue()
+    # stop_queue = multiprocessing.Queue()
 
-    mirobot_p = multiprocessing.Process(
-        target=mirobot_control, args=(queue, stop_queue,))
-    mirobot_p.start()
+    # mirobot_p = multiprocessing.Process(
+    #     target=mirobot_control, args=(queue, stop_queue,))
+    # mirobot_p.start()
 
-    time.sleep(20)
-    realsense = multiprocessing.Process(
-        target=init_realsense, args=(queue, stop_queue))
-    realsense.start()
+    # time.sleep(20)
+    # realsense = multiprocessing.Process(
+    #     target=init_realsense, args=(queue, stop_queue))
+    # realsense.start()
 
-    # Wait for the worker to finish
-    queue.close()
-    queue.join_thread()
-    mirobot_p.join()
-    realsense.join()
+    # # Wait for the worker to finish
+    # queue.close()
+    # queue.join_thread()
+    # mirobot_p.join()
+    # realsense.join()
 
     # return Response(genRealsense(_realsense),
     #                 mimetype='multipart/x-mixed-replace; boundary=frame')
@@ -104,4 +107,4 @@ def members():
 
 
 if __name__ == '__main__':
-    app.run(debug=True)
+    app.run(debug=False)
