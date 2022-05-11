@@ -21,46 +21,46 @@ def gen(camera):
                b'Content-Type: image/jpeg\r\n\r\n' + frame + b'\r\n\r\n')
 
 
-# def genRealsense(camera):
-#     while True:
-#         # Get frame in real time from Realsense camera
-#         ret, bgr_frame, depth_frame = camera.get_frame_stream()
+def genRealsense(camera):
+    while True:
+        # Get frame in real time from Realsense camera
+        ret, bgr_frame, depth_frame = camera.get_frame_stream()
 
-#         print("Got bgr_frame, depth_frame")
+        print("Got bgr_frame, depth_frame")
 
-#         # Get object mask
-#         boxes, classes, contours, centers = mrcnn.detect_objects_mask(
-#             bgr_frame)
+        # Get object mask
+        boxes, classes, contours, centers = mrcnn.detect_objects_mask(
+            bgr_frame)
 
-#         # Draw object mask
-#         bgr_frame = mrcnn.draw_object_mask(bgr_frame)
+        # Draw object mask
+        bgr_frame = mrcnn.draw_object_mask(bgr_frame)
 
-#         # Show depth info of the objects
-#         mrcnn.draw_object_info(bgr_frame, depth_frame)
+        # Show depth info of the objects
+        mrcnn.draw_object_info(bgr_frame, depth_frame)
 
-#         ret, depth_jpg = cv2.imencode('.jpg', depth_frame)
-#         ret, color_jpg = cv2.imencode('.jpg', bgr_frame)
+        ret, depth_jpg = cv2.imencode('.jpg', depth_frame)
+        ret, color_jpg = cv2.imencode('.jpg', bgr_frame)
 
-#         depth_jpg = depth_jpg.tobytes()
-#         color_jpg = color_jpg.tobytes()
+        depth_jpg = depth_jpg.tobytes()
+        color_jpg = color_jpg.tobytes()
 
-#         yield (b'--frame\r\n'
-#                b'Content-Type: image/jpeg\r\n\r\n' + color_jpg + b'\r\n\r\n')
+        yield (b'--frame\r\n'
+               b'Content-Type: image/jpeg\r\n\r\n' + color_jpg + b'\r\n\r\n')
 
-#         key = cv2.waitKey(1)
-#         if key == 27:
-#             break
+        key = cv2.waitKey(1)
+        if key == 27:
+            break
 
-#     _realsense.release()
-#     cv2.destroyAllWindows()
+    _realsense.release()
+    cv2.destroyAllWindows()
 
 
 @ app.route('/realsenseMask')
 def realsenseMask():
     print("hit /realsenseMask flask route")
 
-    # return Response(genRealsense(_realsense),
-    #                 mimetype='multipart/x-mixed-replace; boundary=frame')
+    return Response(genRealsense(_realsense),
+                    mimetype='multipart/x-mixed-replace; boundary=frame')
 
 
 @ app.route('/realsenseYolo')
