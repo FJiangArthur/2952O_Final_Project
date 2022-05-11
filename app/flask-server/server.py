@@ -3,15 +3,15 @@ import multiprocessing
 from web_mirobot import *
 from web_yolov5_realsense import init_realsense
 
-# from realsense import *
+from realsense import *
 from webcam import *
-# from web_mask_rcnn import *
+from web_mask_rcnn import *
 
 app = Flask(__name__)
 
 _video_cam = VideoCamera()
-# _realsense = Realsense()
-# mrcnn = WebMaskRCNN()
+_realsense = Realsense()
+mrcnn = WebMaskRCNN()
 
 
 def gen(camera):
