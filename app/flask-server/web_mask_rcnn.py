@@ -4,7 +4,7 @@ import time
 import cv2
 import numpy as np
 
-arm = WlkataMirobot(portname='/dev/cu.usbserial-1410')
+arm = WlkataMirobot(portname='/dev/cu.usbserial-10')
 arm.home()
 
 class WebMaskRCNN:
