@@ -40,7 +40,7 @@ function Main() {
         mt={4}
         padding={1}
       >
-        <Grid item xs={3}>
+        <Grid item xs={4}>
           <Button
             onClick={() => navigate("/simple")}
             sx={{ height: "20vh", width: "100%" }}
@@ -49,7 +49,7 @@ function Main() {
             Simple Video Stream
           </Button>
         </Grid>
-        <Grid item xs={3}>
+        <Grid item xs={4}>
           <Button
             onClick={() => navigate("/realsenseMask")}
             sx={{ height: "20vh", width: "100%" }}
@@ -58,22 +58,13 @@ function Main() {
             Intel RealSense (MaskRCNN)
           </Button>
         </Grid>
-        <Grid item xs={3}>
+        <Grid item xs={4}>
           <Button
             onClick={() => navigate("/realsenseYolo")}
             sx={{ height: "20vh", width: "100%" }}
             variant="outlined"
           >
             Intel RealSense (YOLOv5)
-          </Button>
-        </Grid>
-        <Grid item xs={3}>
-          <Button
-            onClick={() => navigate("/")}
-            sx={{ height: "20vh", width: "100%" }}
-            variant="outlined"
-          >
-            OpenCV Oak-D Lite
           </Button>
         </Grid>
       </Grid>
@@ -83,7 +74,13 @@ function Main() {
         </a>
       </Typography>
       <Typography variant="body1" align="center" sx={{ padding: 1 }}>
-        <a href={""} target="_blank" rel="noreferrer">
+        <a
+          href={
+            "https://docs.google.com/presentation/d/1TMLFYcRORn4luqOl5elrSMyqlWLIIRmt88hbgLk41TI/edit#slide=id.g129104404e6_0_0"
+          }
+          target="_blank"
+          rel="noreferrer"
+        >
           Poster
         </a>
       </Typography>

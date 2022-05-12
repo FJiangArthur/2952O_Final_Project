@@ -4,14 +4,13 @@ import time
 import cv2
 import numpy as np
 
+arm = WlkataMirobot(portname='/dev/cu.usbserial-1410')
+print("arm initialized")
+arm.home()
+
 
 class WebMaskRCNN:
     def __init__(self):
-        # Mirobot
-        # arm = WlkataMirobot(portname='/dev/cu.usbserial-1410')
-        arm = WlkataMirobot()
-        arm.home()
-
         # Loading Mask RCNN
 
         self.net = cv2.dnn.readNetFromTensorflow("dnn/frozen_inference_graph_coco.pb",
