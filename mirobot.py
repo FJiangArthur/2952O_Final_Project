@@ -3,7 +3,7 @@ import math
 from wlkata_mirobot import WlkataMirobot,WlkataMirobotTool
 import time
 
-animals = {'dog','sheep', 'horse'}
+animals = {'dog','sheep', 'horse','banana', 'apple'}
 cars = {'truck', 'car'}
 
 # https://pysource.com/instance-segmentation-mask-rcnn-with-python-and-opencv
@@ -73,8 +73,6 @@ def mirobot_control(process_q=None,stop_queue=None):
     print(arm.get_status())
     once = False
     twice = False
-    time.sleep(2)
-    # arm.set_joint_angle({6:-90.0})
 
     while True:
         mirobot_info_que = process_q.get()
@@ -85,49 +83,56 @@ def mirobot_control(process_q=None,stop_queue=None):
             else:
                  target_location[key] = mirobot_info_que[key]
 
-        if target_location != None and mirobot_location != None:
+        if len(target_location) and mirobot_location != None:
             stop_queue.put("Stop")
             for current_target_key in target_location.keys():
                 if not once:
                     ## Hard Coded
-                    arm.set_tool_pose(y= int((-0.27) *(mirobot_location['x'] - target_location[current_target_key]['x']) * np.sign(mirobot_location['x'] - target_location[current_target_key]['x'])),
-                                      x= int((0.09) *(mirobot_location['z'] - target_location[current_target_key]['z']) * np.sign(mirobot_location['z'] - target_location[current_target_key]['z'])),
-                                      z= -120,
+                    arm.set_tool_pose(y= int((-0.29) *(mirobot_location['x'] - target_location[current_target_key]['x']) * np.sign(mirobot_location['x'] - target_location[current_target_key]['x'])),
+                                      x= int((0.05) *(mirobot_location['z'] - target_location[current_target_key]['z']) * np.sign(mirobot_location['z'] - target_location[current_target_key]['z'])),
+                                      z= -140,
                                       roll=0.0, pitch=0.0, yaw=0.0, mode='p2p', speed=2000, is_relative=True)
                     once = True
+                    stop_queue.get()
 
-
-                if once and not twice:
+                elif once and not twice:
                     if abs(mirobot_location['x'] - target_location[current_target_key]['x']) >= 10:
                         arm.set_tool_pose(y= int((-0.05) *(mirobot_location['x'] - target_location[current_target_key]['x']) * np.sign(mirobot_location['x'] - target_location[current_target_key]['x'])),
                                              is_relative=True)
 
+
                     if abs(mirobot_location['z'] - target_location[current_target_key]['z']) >= 10:
-                        arm.set_tool_pose(x=int(0.02 * (mirobot_location['z'] - target_location[current_target_key]['z']) *
+                        arm.set_tool_pose(x=int(-0.05 * (mirobot_location['z'] - target_location[current_target_key]['z']) *
                                              np.sign(mirobot_location['z'] - target_location[current_target_key]['z'])), is_relative=True)
 
 
                     # move_up_down(step= 60 * (1) * np.sign(mirobot_location['y'] - target_location[current_target_key]['y']))#abs(target_location[current_target_key]['y'] - mirobot_location['y']))
                     arm.set_tool_pose(z= -40, is_relative=True)
 
-                    arm.gripper_close()
+                    arm.pump_suction()
                     time.sleep(3)
-                    arm.set_tool_pose(z=140,
+                    arm.set_tool_pose(z=180,
                                       roll=0.0, pitch=0.0, yaw=0.0, mode='p2p', speed=2000, is_relative=True)
 
                     if current_target_key in animals:
                         arm.set_tool_pose(x=0, y=202, z=181)
-                        arm.gripper_open()
                         time.sleep(3)
+                        arm.pump_blowing()
+                        time.sleep(3)
+                        arm.set_tool_pose(x=150, y=0, z = 180)
                     else:
                         arm.set_tool_pose(x=0, y=-202, z=181)
-                        arm.gripper_open()
                         time.sleep(3)
+                        arm.pump_blowing()
+                        time.sleep(3)
+                        arm.set_tool_pose(x=150, y=0, z = 180)
 
-                    arm.set_tool_pose(x=202, y= 0, z=181)
-                    stop_queue.get()
+                    arm.pump_off()
                     twice = False
                     once = False
+                    target_location = {}
+                    mirobot_location = None
+
 
 if __name__ == '__main__':
     mirobot_control()
