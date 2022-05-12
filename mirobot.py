@@ -83,48 +83,49 @@ def mirobot_control(process_q=None,stop_queue=None):
             else:
                  target_location[key] = mirobot_info_que[key]
 
-        if len(target_location) and mirobot_location != None:
+        if len(target_location) !=0 and mirobot_location is not None:
             stop_queue.put("Stop")
             for current_target_key in target_location.keys():
                 if not once:
                     ## Hard Coded
-                    arm.set_tool_pose(y= int((-0.29) *(mirobot_location['x'] - target_location[current_target_key]['x']) * np.sign(mirobot_location['x'] - target_location[current_target_key]['x'])),
-                                      x= int((0.05) *(mirobot_location['z'] - target_location[current_target_key]['z']) * np.sign(mirobot_location['z'] - target_location[current_target_key]['z'])),
+                    arm.set_tool_pose(y= int((-0.5) *(mirobot_location['x'] - target_location[current_target_key]['x'])),
+                                      x= int((0.05) *(mirobot_location['z'] - target_location[current_target_key]['z'])),
                                       z= -140,
                                       roll=0.0, pitch=0.0, yaw=0.0, mode='p2p', speed=2000, is_relative=True)
+
+                    # arm.set_tool_pose(y=-30, x=202, z=0)
                     once = True
-                    stop_queue.get()
+
 
                 elif once and not twice:
                     if abs(mirobot_location['x'] - target_location[current_target_key]['x']) >= 10:
-                        arm.set_tool_pose(y= int((-0.05) *(mirobot_location['x'] - target_location[current_target_key]['x']) * np.sign(mirobot_location['x'] - target_location[current_target_key]['x'])),
+                        arm.set_tool_pose(y= int((-0.29) *(mirobot_location['x'] - target_location[current_target_key]['x'])),
                                              is_relative=True)
 
 
                     if abs(mirobot_location['z'] - target_location[current_target_key]['z']) >= 10:
-                        arm.set_tool_pose(x=int(-0.05 * (mirobot_location['z'] - target_location[current_target_key]['z']) *
-                                             np.sign(mirobot_location['z'] - target_location[current_target_key]['z'])), is_relative=True)
+                        arm.set_tool_pose(x=int(0.05 * (mirobot_location['z'] - target_location[current_target_key]['z'])), is_relative=True)
 
 
-                    # move_up_down(step= 60 * (1) * np.sign(mirobot_location['y'] - target_location[current_target_key]['y']))#abs(target_location[current_target_key]['y'] - mirobot_location['y']))
+
                     arm.set_tool_pose(z= -40, is_relative=True)
 
                     arm.pump_suction()
-                    time.sleep(3)
+                    time.sleep(1.5)
                     arm.set_tool_pose(z=180,
                                       roll=0.0, pitch=0.0, yaw=0.0, mode='p2p', speed=2000, is_relative=True)
 
                     if current_target_key in animals:
-                        arm.set_tool_pose(x=0, y=202, z=181)
-                        time.sleep(3)
+                        arm.set_tool_pose(x=-10, y=202, z=181)
+                        time.sleep(1.5)
                         arm.pump_blowing()
-                        time.sleep(3)
+                        time.sleep(1.5)
                         arm.set_tool_pose(x=150, y=0, z = 180)
                     else:
-                        arm.set_tool_pose(x=0, y=-202, z=181)
-                        time.sleep(3)
+                        arm.set_tool_pose(x=10, y=202, z=181)
+                        time.sleep(1.5)
                         arm.pump_blowing()
-                        time.sleep(3)
+                        time.sleep(1.5)
                         arm.set_tool_pose(x=150, y=0, z = 180)
 
                     arm.pump_off()
@@ -132,6 +133,8 @@ def mirobot_control(process_q=None,stop_queue=None):
                     once = False
                     target_location = {}
                     mirobot_location = None
+
+            stop_queue.get()
 
 
 if __name__ == '__main__':

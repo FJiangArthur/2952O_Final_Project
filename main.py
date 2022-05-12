@@ -21,7 +21,7 @@ if __name__ == '__main__':
     mirobot_p = multiprocessing.Process(target=mirobot_control, args=(queue,stop_queue,))
     mirobot_p.start()
 
-    time.sleep(20)
+    time.sleep(15)
     realsense = multiprocessing.Process(target=init_realsense, args=(queue,stop_queue))
     realsense.start()
 

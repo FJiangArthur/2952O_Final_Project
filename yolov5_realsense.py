@@ -120,7 +120,7 @@ def init_realsense(process_que=None, stop_queue=None):
             results = model(color_image)
             boxs= results.pandas().xyxy[0].values
             info_q = dectshow(color_image, boxs, depth_image, depth_intrin, process_que)
-            if (current_time - start_time) > 3 and (info_q is not None) and (stop_queue.empty()):
+            if (current_time - start_time) > 1 and (info_q is not None) and (stop_queue.empty()):
                 start_time = current_time
                 process_que.put(info_q)
 
