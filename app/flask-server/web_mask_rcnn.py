@@ -4,8 +4,10 @@ import time
 import cv2
 import numpy as np
 
-arm = WlkataMirobot(portname='/dev/cu.usbserial-10')
+arm = WlkataMirobot(portname='/dev/cu.usbserial-1410')
+print("arm initialized")
 arm.home()
+
 
 class WebMaskRCNN:
     def __init__(self):
