@@ -58,7 +58,7 @@ roslaunch see-pick-mirobot yolov4_depthai.launch
 ### MaskRCNN Repo
 https://github.com/matterport/Mask_RCNN
 
-### Yolo v5
+### Yolov5 Repo
 https://github.com/killnice/yolov5-D435i?fbclid=IwAR179t_eFRqL0AOv8SmjYIf-Nk9mSCuWmFElyD33Ctui9GHwFjNJHfd9UaE
 
 ### Important
