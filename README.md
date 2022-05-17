@@ -30,6 +30,11 @@ bash -c "$(curl -fL https://docs.luxonis.com/install_dependencies.sh)"
 python3 -m pip install opencv-python --force-reinstall --no-cache-dir
 ```
 
+## Our ROS 2 Mirobot Integration Solution Repos
+
+* https://github.com/FJiangArthur/2952O-Mirobot-ROS2?fbclid=IwAR10b7i5iCZ0xhmTA8glrdVILWPPsRZK3OQZC7pMPIK9e5iSY-jzqDBjcVY
+* https://github.com/FJiangArthur/2952O-Serial-ROS2?fbclid=IwAR20j-dqh4PlA0UrDKbhWKJLZd0KFNiyyKF8Ho4j1mtoCDuow0sROuRmvSw
+
 
 ## References
 
