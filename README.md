@@ -6,7 +6,7 @@ We then use the Mirobot robot arm to segregate objects by class to prepare these
 
  * [Project Poster](https://drive.google.com/file/d/1IhJ5JxWvTOD48baTFk1SDgBTMWksTkgd/view?usp=sharing)
  * [Paper](https://arxiv.org/abs/2011.12948)
- * [Video](https://www.youtube.com/watch?v=MrKrnHhk8IA)
+ * [Video](https://drive.google.com/file/d/1t1JLBH4yuk6mLWVN-YUgFcyieSbIKyHM/view?usp=sharing)
 
 
 ## Launching app
