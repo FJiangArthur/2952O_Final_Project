@@ -21,6 +21,10 @@ npm start
 cd flask-server
 python3 server.py
 
+
+If the frontend does not work, the MaskRCNN backend can still be run assuming Realsense and Mirobot packages are installed, and the appropriate devices are plugged in.
+Entry point for backend-only: python3 measure_object_distance.py
+
 ## Getting Started
 ### 
 ```shell
