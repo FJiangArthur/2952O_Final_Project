@@ -1,4 +1,4 @@
-# 2952O_Final_Project
+# Seen-n-Pick: Object Detection & Segregation using Mirobot
 
 ## Launching app
 
