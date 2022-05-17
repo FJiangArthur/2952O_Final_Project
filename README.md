@@ -1,5 +1,14 @@
 # Seen-n-Pick: Object Detection & Segregation using Mirobot
 
+Our goal is to use state-of-art computer vision techniques coupled with low cost depth cameras for identifying objects on a production line.
+
+We then use the Mirobot robot arm to segregate objects by class to prepare these objects for delivery. 
+
+ * [Project Poster](https://drive.google.com/file/d/1IhJ5JxWvTOD48baTFk1SDgBTMWksTkgd/view?usp=sharing)
+ * [Paper](https://arxiv.org/abs/2011.12948)
+ * [Video](https://www.youtube.com/watch?v=MrKrnHhk8IA)
+
+
 ## Launching app
 
 ### Frontend
