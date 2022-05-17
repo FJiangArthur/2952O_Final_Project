@@ -58,6 +58,9 @@ roslaunch see-pick-mirobot yolov4_depthai.launch
 ### MaskRCNN Repo
 https://github.com/matterport/Mask_RCNN
 
+### Yolo v5
+https://github.com/killnice/yolov5-D435i?fbclid=IwAR179t_eFRqL0AOv8SmjYIf-Nk9mSCuWmFElyD33Ctui9GHwFjNJHfd9UaE
+
 ### Important
 
 It seems that in the MoveIt workspace, the x axis is the direction arm is facing after homing.
