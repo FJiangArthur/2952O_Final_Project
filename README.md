@@ -5,7 +5,7 @@ Our goal is to use state-of-art computer vision techniques coupled with low cost
 We then use the Mirobot robot arm to segregate objects by class to prepare these objects for delivery. 
 
  * [Project Poster](https://drive.google.com/file/d/1IhJ5JxWvTOD48baTFk1SDgBTMWksTkgd/view?usp=sharing)
- * [Paper](https://arxiv.org/abs/2011.12948)
+ * [Paper](https://drive.google.com/file/d/1sXqiwEZ7ISkdXaap-I7ri-bMGoECK2Fi/view?usp=sharing)
  * [Video](https://drive.google.com/file/d/1t1JLBH4yuk6mLWVN-YUgFcyieSbIKyHM/view?usp=sharing)
 
 
